@@ -1,0 +1,31 @@
+.tablesContainer{
+    display: flex;
+    justify-content: center;
+}
+.tableHead{
+    background-color: #405E7F;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.4rem;
+}
+.tableHead h4{
+    font-weight: 600;
+    color: #fff;
+}
+.tableHead button{
+    font-size: 13px;
+}
+.addImage{
+    font-size: 24px;
+}
+.updateIcon,.deleteIcon{
+    font-size: 20px;
+    cursor: pointer;
+}
+.updateIcon{
+    color: #F4C34A;
+}
+.deleteIcon{
+    color:#E95B66;
+    margin-left: 1rem;
+}
