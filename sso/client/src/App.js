@@ -15,19 +15,23 @@ function App() {
 
     const salt="qwe123asd123zxc";
     const response = await axios.post("http://localhost:3010/",{username:username,password:sha256(password+salt)});
-    console.log(response.data)
+    console.log(response.data);
   }
 
   useEffect(() => {
-    if(window.location.search.split("=")[0]==="?redirectURL"){
-      setRedirect(true);
+    const redirectQuery = window.location.search.split("=")[0];
+    const redirectParam = window.location.search.split("=")[1]
+    
+    if(redirectQuery==="?redirectURL"){
+      if(redirectParam !== "" && redirectParam !== null && redirectParam.length !== 0){
+        setRedirect(true);
+      }
     }
     else{
       setRedirect(false);
     }
-  },[])
+  },[]);
   
-
   return (
     <div className="App">
         {redirect &&

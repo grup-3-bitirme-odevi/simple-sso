@@ -3,8 +3,14 @@ exports.IsAuthorized = async (req, res) => {
     console.log(user.username)
     console.log(user.password)
 
+    console.log(req.query)
+
     return res.json({
         "username":user.username,
         "password":user.password
-    })
+    }); 
+}
+
+exports.CheckUrl = async (req, res) => {
+    
 }
