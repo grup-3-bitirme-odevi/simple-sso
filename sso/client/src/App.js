@@ -1,11 +1,13 @@
-import './App.css';
+import React from "react";
+import Login from "./Components/Login";
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      hello
-    </div>
+    <>
+      <Login />
+    </>
   );
-}
+};
 
 export default App;
