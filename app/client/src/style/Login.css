@@ -1,0 +1,48 @@
+.loginContainer{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#121212;
+}
+.formContainer{
+    padding: 7rem 5rem 20rem 5rem;
+    background: #FFFFFF;
+    border-radius: 1rem;
+    width: 550px;
+}
+.formElementContainer{
+    display: flex;
+    flex-direction: column;
+}
+.formElementContainer input{
+    font-size: 13px;
+    border:none;
+    border-radius: 0px;
+    border-bottom: 1px solid gray;
+}
+.formElementContainer input:focus{
+    box-shadow: none;
+    border-color: gray;
+}
+.formContainer label{
+    font-size: 18px;
+    font-weight: 600;
+}
+.formContainer label, 
+.formContainer small, 
+.formContainer input{
+    user-select: none;
+}
+.formElementContainer button{
+    border-radius: 5rem;
+    border-color: rgb(214, 211, 211);
+    font-weight: 600;
+    height: 2.7rem;
+    background: linear-gradient(90deg,#5FD5DE,#E73BF6);
+}
+.formElementContainer button:hover,
+.formElementContainer button:focus{
+    border-color: rgb(214, 211, 211);
+}
