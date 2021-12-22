@@ -11,25 +11,19 @@ function App() {
   const [redirect, setRedirect] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [data, setData] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const salt="qwe123asd123zxc";
-
-    const response = await axios.post("http://localhost:3100/",{username:username,password:sha256(password+salt)});
-    if (response.status === 200){
+    var redURL = window.location.search;
+    redURL = redURL.replace("?redirectURL=", '');
+    const response = await axios.post("http://localhost:3100/",{url:redURL, username:username,password:sha256(password+salt)});
+    console.log(response.data.message)
+    if (response.data.message === "success"){
       cookies.set("access_token", response.data.access_token)
     }
   }
-  // useEffect(()=>{
-  //   const abc = "success"
-  //   setData(abc);
-
-  //   // window.location.assign("http://localhost:3030")
-  // },[])
-  // return(data)
 
   return (
     <div className="loginContainer">

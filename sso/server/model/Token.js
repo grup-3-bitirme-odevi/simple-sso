@@ -18,7 +18,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
         ttl: {
-            type: DataTypes.STRING(40),
+            type: DataTypes.TEXT,
             allowNull: false
         }
     }, {
