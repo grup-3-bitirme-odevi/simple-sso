@@ -1,25 +1,29 @@
 import {useEffect, useState} from 'react';
 import { Cookies } from 'react-cookie';
+import axios from "axios";
 const cookies = new Cookies();
 
 function App() {
-  
-  useEffect(() => {
-    const token = cookies.get('tokenosss');
-    const hostname = window.location.hostname;
-    const href = window.location.href;
-    console.log(hostname)
-    console.log(href)
+  const [views, setViews] = useState(false);
 
-
-
-    if(!token){
-      window.location.assign('http://localhost:3010?redirectURL=http://'+hostname+":"+href);
-    } else {
-
+  useEffect(()=>{
+    const getCookie = cookies.get("access_token");
+    const originURL = window.location.origin;
+    if(getCookie !== undefined && getCookie !== null && getCookie !== ""){
+      (async function(){
+        try{
+          const isAuthorized = await axios.get('http://localhost:3010?redirectURL=' + originURL)
+          console.log(isAuthorized)
+          // window.location.assign("http://localhost:3010?redirectURL="+ originURL)
+        } catch(err){
+          console.log(err);
+        }
+      })();
+      setViews(true);
+    } else{
+      window.location.assign("http://localhost:3010?redirectURL="+ originURL)
     }
-
-  })
+  },[])
 
 
   /*
@@ -28,6 +32,7 @@ function App() {
   */
   return (
     <div className="App">
+      {views && "hello"}
     </div>
   );
 }
