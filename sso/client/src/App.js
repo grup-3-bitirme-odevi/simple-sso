@@ -2,52 +2,54 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { sha256 } from 'js-sha256';
 import { Cookies } from 'react-cookie';
+import { Form, Button } from "react-bootstrap";
+import "./assets/App.css"
 const cookies = new Cookies();
 
 function App() {
 
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [data, setData] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const salt="qwe123asd123zxc";
-    await axios.post("http://localhost:3100/",{username:username,password:sha256(password+salt)});
-  }
 
-  useEffect(() => {
-    const redirectQuery = window.location.search.split("=")[0];
-    const redirectParam = window.location.search.split("=")[1]
-    
-    if(redirectQuery==="?redirectURL"){
-      if(redirectParam !== "" && redirectParam !== null && redirectParam.length !== 0){
-        (async function (){
-          try{
-            const response = await axios.post("http://localhost:3100/checkurl", {url: redirectParam});
-            if(response.data.message==="success"){
-              setRedirect(true);
-            }
-          } catch(err){
-            console.log(err);
-          }
-        })();
-      }
+    const response = await axios.post("http://localhost:3100/",{username:username,password:sha256(password+salt)});
+    if (response.status === 200){
+      cookies.set("access_token", response.data.access_token)
     }
-    else{
-      setRedirect(false);
-    }
-  },[]);
-  
+  }
+  // useEffect(()=>{
+  //   const abc = "success"
+  //   setData(abc);
+
+  //   // window.location.assign("http://localhost:3030")
+  // },[])
+  // return(data)
+
   return (
-    <div className="App">
+    <div className="loginContainer">
         {redirect &&
-          <form onSubmit={handleSubmit}>
-            <input type="text" id="username" value={username} onChange={(e) => {setUsername(e.target.value)}} placeholder="login" />
-            <input type="text" id="password" value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="password" /> 
-            <button type="submit" > login </button>
-          </form>
+      <div className="formContainer">
+        <Form className="formElementContainer" onSubmit={handleSubmit} >
+          <Form.Group className="mb-3" controlId="formBasicName">
+            <Form.Label>Kullanıcı Adı</Form.Label>
+            <Form.Control type="text" value={username} onChange={(e) => {setUsername(e.target.value)}} placeholder="Kullanıcı Adınızı giriniz"  />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Şifre</Form.Label>
+            <Form.Control type="password" value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Şifrenizi Giriniz"  />
+          </Form.Group>
+          <Button type="submit">
+            Giriş Yap
+          </Button>
+        </Form>
+      </div>
         }
         
     </div>
