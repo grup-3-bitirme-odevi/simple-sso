@@ -3,7 +3,7 @@ const cors = require('cors');
 // DB Connection
 require('./config/databaseConfig')
 
-const ssoRoute = require("./route/ssoRoute");
+const appRoute = require("./route/appRoute");
 
 // Express Start
 const app = express();
@@ -14,7 +14,7 @@ app.use(express.json())
 app.use(cors());
 
 // Routes
-app.use("/", ssoRoute);
+app.use("/", appRoute);
 
 // App Start
 const port = 3100;

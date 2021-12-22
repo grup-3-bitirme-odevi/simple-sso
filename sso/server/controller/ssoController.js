@@ -1,33 +1,44 @@
 const db = require('../model');
+const { sha256 } = require('js-sha256');
+const tokenCreator = require('../config/tokenCreator');
 const User = db.user;
+const Url = db.url;
+const Token = db.token;
 
-exports.addUser = async(req, res) => {
-    let info = {
-        username:"koray123",
-        user_name:"koray",
-        user_surname:"sarıoğlu",
-        user_password:"123456",
-        user_email:"koray@gmail.com",
-        user_type:"admin"
+exports.IsAuthorized = async(req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    const token = tokenCreator.makeToken(120);
+
+    const user = await User.findOne({ where: { username: username } });
+        
+    if(!user){
+        return res.status(403).json({
+            "message":"user not found"
+        })
     }
 
-    const user = await User.create(info);
-    res.status(201).send(user)
+    if(user.dataValues.user_password != password){
+        return res.status(403).json({
+            "message":"password not match"
+        })
+    }
 
+    return res.status(200).json({
+        "user_id":user.dataValues.id,
+        "access_token":token
+    })
 }
 
-/*
-exports.IsAuthorized = async (req, res) => {
-    const userDetail = req.body;
-    console.log(userDetail.username)
-    console.log(userDetail.password)
-    //const project = await User.findOne({ where: { username: 'aslan' } });
-    //console.log(project)
-    console.log(req.query)
+exports.GetUserInfo = async(req, res) => {
+    const {access_token, user_id} = req.body;
 
+    const user = await User.findOne({where: {id: user_id}});
+    
+    if(!user){
+        return res.status(403).json({
+            "message":"user not found"
+        })
+    }
 
-    return res.json({
-        "username":user.username,
-        "password":user.password
-    }); 
-}*/
+}

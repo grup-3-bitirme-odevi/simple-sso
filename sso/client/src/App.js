@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { sha256 } from 'js-sha256';
-
-
+import { Cookies } from 'react-cookie';
+const cookies = new Cookies();
 
 function App() {
 
@@ -14,8 +14,7 @@ function App() {
     e.preventDefault();
 
     const salt="qwe123asd123zxc";
-    const response = await axios.post("http://localhost:3010/",{username:username,password:sha256(password+salt)});
-    console.log(response.data);
+    await axios.post("http://localhost:3100/",{username:username,password:sha256(password+salt)});
   }
 
   useEffect(() => {
@@ -24,7 +23,16 @@ function App() {
     
     if(redirectQuery==="?redirectURL"){
       if(redirectParam !== "" && redirectParam !== null && redirectParam.length !== 0){
-        setRedirect(true);
+        (async function (){
+          try{
+            const response = await axios.post("http://localhost:3100/checkurl", {url: redirectParam});
+            if(response.data.message==="success"){
+              setRedirect(true);
+            }
+          } catch(err){
+            console.log(err);
+          }
+        })();
       }
     }
     else{
