@@ -1,4 +1,5 @@
 import "./assets/App.css"
+import { useState, useEffect } from 'react';
 import axios from "axios"
 import { Table, Col, Button } from "react-bootstrap";
 import { IoAddCircle } from "react-icons/io5";
@@ -6,29 +7,17 @@ import { IoMdTrash } from "react-icons/io";
 import {HiPencil} from "react-icons/hi";
 
 const App = () => {
-    const users = [
-        {
-            "user_name":"oğuz",
-            "user_mail":"oguz@gmail.com",
-            "user_address":"İstanbul",
-            "user_phone":"5649775412"
-        },{
-            "user_name":"anılcan",
-            "user_mail":"anılcan@gmail.com",
-            "user_address":"İstanbul",
-            "user_phone":"5468679475"
-        },{
-            "user_name":"ömer",
-            "user_mail":"ömer@gmail.com",
-            "user_address":"İstanbul",
-            "user_phone":"5548612475"
-        },{
-            "user_name":"koray",
-            "user_mail":"koray@gmail.com",
-            "user_address":"İstanbul",
-            "user_phone":"5521536987"
-        }
-    ]
+  const [users, setUsers] = useState();
+  useEffect(() => {
+     axios.get('http://localhost:3100/users').then((data)=>{setUsers(data.data) })
+    
+  }, [])
+  console.log(users)
+
+
+  
+ 
+
   return (
     <Col className="tablesContainer" xl={12} md={12} lg={12} sm={12} xs={12} >
       <Col className="manageContainer" xl={8} md={8} lg={8} sm={8} xs={8}>
@@ -40,9 +29,9 @@ const App = () => {
           <thead>
             <tr>
               <th>Name</th>
+              <th>Surname</th>
               <th>Email</th>
-              <th>Address</th>
-              <th>Phone</th>
+              <th>Role</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -52,9 +41,9 @@ const App = () => {
                     return(
                         <tr>
               <td>{data.user_name}</td>
-              <td>{data.user_mail}</td>
-              <td>{data.user_address}</td>
-              <td>{data.user_phone}</td>
+              <td>{data.user_surname}</td>
+              <td>{data.user_email}</td>
+              <td>{data.user_type}</td>
               <td><HiPencil className="updateIcon"/><IoMdTrash className="deleteIcon"/></td>
             </tr>
                     )
