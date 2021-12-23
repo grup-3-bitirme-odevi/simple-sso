@@ -3,7 +3,7 @@ import { Modal, Form, Dropdown, Button } from "react-bootstrap";
 import axios from "axios";
 import Alert from 'react-bootstrap/Alert'
 
-const CreateModal = ({ show, setShow }) => {
+const CreateModal = ({ show, setShow,setCreate,create}) => {
   /* Create User Datas */
   const [username, setUsername] = useState("");
   const [user_name, setUser_Name] = useState("");
@@ -25,7 +25,6 @@ const CreateModal = ({ show, setShow }) => {
       user_password: user_password,
       user_email: user_email,
       user_type: user_type
-
     }
     await axios.post('http://localhost:3100/', article)
       .then(response => {
@@ -124,7 +123,7 @@ const CreateModal = ({ show, setShow }) => {
             <Button variant="secondary" onClick={forCreateClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit" onClick={forCreateUser}>
+            <Button variant="primary" type="submit" onClick={()=>{setCreate(create+1);forCreateUser()}}>
               Create
             </Button>
           </Modal.Footer>

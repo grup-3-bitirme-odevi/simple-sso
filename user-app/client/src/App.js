@@ -1,29 +1,32 @@
 import "./assets/App.css";
-import { useState, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import CreateModal from "./Components/CreateModal";
 import { Table, Col, Button } from "react-bootstrap";
 import { IoAddCircle } from "react-icons/io5";
 import { IoMdTrash } from "react-icons/io";
 import { HiPencil } from "react-icons/hi";
+import UpdateModal from "./Components/UpdateModal";
 
 
 const App = () => {
   const [users, setUsers] = useState();
-
+  const [create,setCreate] = useState(0)
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
+  const [updateshow, setupShow] = useState(false);
 
 
-  useLayoutEffect(() => {
+
+  useEffect(() => {
     axios
       .get("http://localhost:3100/users")
       .then((data) => {
-        setUsers(data.data)
-        console.log(data);
-      })
+        setUsers(data.data);
+        console.log(data)}).finally()
       .catch((err) => console.log(err));
-  }, [users]);
+  }, [create]);
+
 
   return (
     <Col className="tablesContainer" xl={12} md={12} lg={12} sm={12} xs={12}>
@@ -56,15 +59,18 @@ const App = () => {
                       <td>{data.user_email}</td>
                       <td>{data.user_type}</td>
                       <td>
-                        <HiPencil className="updateIcon" />
-                        <IoMdTrash className="deleteIcon" />
+                        <HiPencil className="updateIcon"  />
+                        <IoMdTrash className="deleteIcon"   />
                       </td>
                     </tr>
                   );
                 })}
           </tbody>
         </Table>
-        <CreateModal show={show} setShow={setShow} />
+        <CreateModal show={show} setShow={setShow} setCreate={setCreate} create={create}/>
+        <UpdateModal updateshow={updateshow} setupShow={setupShow}  />
+
+
       </Col>
     </Col>
   );
