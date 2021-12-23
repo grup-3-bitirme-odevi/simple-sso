@@ -12,9 +12,17 @@ function App() {
     if(getCookie !== undefined && getCookie !== null && getCookie !== ""){
       (async function(){
         try{
-          const isAuthorized = await axios.get('http://localhost:3010?redirectURL=' + originURL)
-          console.log(isAuthorized)
-          // window.location.assign("http://localhost:3010?redirectURL="+ originURL)
+          const isAccessTokenValid = await axios.post('http://localhost:3100/validate',{
+            token: getCookie,
+            url: originURL
+          });
+          if(isAccessTokenValid.data.message==='fail'){
+            cookies.remove("access_token");
+            window.location.assign("http://localhost:3010?redirectURL="+ originURL)
+          } else{
+            cookies.set('access_token',isAccessTokenValid.data.access_token);
+          }
+          
         } catch(err){
           console.log(err);
         }

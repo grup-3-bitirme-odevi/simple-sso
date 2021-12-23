@@ -8,7 +8,7 @@ const cookies = new Cookies();
 
 function App() {
 
-  const [redirect, setRedirect] = useState(true);
+  const [redirect, setRedirect] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,12 +18,50 @@ function App() {
     const salt="qwe123asd123zxc";
     var redURL = window.location.search;
     redURL = redURL.replace("?redirectURL=", '');
-    const response = await axios.post("http://localhost:3100/",{url:redURL, username:username,password:sha256(password+salt)});
+    const response = await axios.post("http://localhost:3100/",{
+      url:redURL, 
+      username:username,
+      password:sha256(password+salt)
+    });
     console.log(response.data.message)
     if (response.data.message === "success"){
       cookies.set("access_token", response.data.access_token)
+      window.location.assign(redURL);
+
     }
   }
+
+  useEffect(() => {
+    const getCookie = cookies.get("access_token");
+    var redURL = window.location.search;
+    redURL = redURL.replace("?redirectURL=", '');
+    const redirectQuery = window.location.search.split("=")[0];
+
+    const getCookie2 = cookies.getAll();
+    console.log(getCookie2)
+
+
+    if(redirectQuery==="?redirectURL"){
+      if(redURL !== "" && redURL !== null && redURL.length !== 0){
+        (async function (){
+          try{
+            const urlValid = await axios.post("http://localhost:3100/checkurl", {url: redURL});
+            console.log(urlValid)
+
+            if(urlValid.data.message==="success"){
+              setRedirect(true);
+            }
+          } catch(err){
+            console.log(err);
+          }
+        })();
+      }
+    }
+    else{
+      setRedirect(false);
+    }
+
+  },[])
 
   return (
     <div className="loginContainer">

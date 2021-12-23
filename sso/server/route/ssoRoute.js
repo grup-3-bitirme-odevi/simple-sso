@@ -5,6 +5,7 @@ const ssoMiddleware = require("../middleware/ssoMiddleware");
 const router = express.Router();
 
 router.route("/").post(ssoMiddleware, ssoController.IsAuthorized);
-router.route("/test").post(ssoMiddleware, ssoController.IsAccessTokenValid);
+router.route("/validate").post(ssoMiddleware, ssoController.IsAccessTokenValid);
+router.route("/checkurl").post(ssoMiddleware, ssoController.CheckUrl);
 
 module.exports = router;
