@@ -12,7 +12,6 @@ const CreateModal = ({ show, setShow,setCreate,create}) => {
   const [user_email, setUser_Mail] = useState("");
   const [user_type, setUser_Type] = useState("");
   const [selectRole, setSelectRole] = useState("");
-  const [alert, setAlert] = useState("");
 
 
 
@@ -28,7 +27,6 @@ const CreateModal = ({ show, setShow,setCreate,create}) => {
     }
     await axios.post('http://localhost:3100/', article)
       .then(response => {
-        setAlert(response);
         setShow(false);
         setUsername("");
         setUser_Name("")
@@ -110,7 +108,6 @@ const CreateModal = ({ show, setShow,setCreate,create}) => {
                     onClick={() => {
                       setUser_Type("Admin");
                       setSelectRole("Admin");
-                      console.log(user_type);
                     }}
                   >
                     Admin

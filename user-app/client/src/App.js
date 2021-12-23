@@ -7,6 +7,7 @@ import { IoAddCircle } from "react-icons/io5";
 import { IoMdTrash } from "react-icons/io";
 import { HiPencil } from "react-icons/hi";
 import UpdateModal from "./Components/UpdateModal";
+import DeleteModal from "./Components/DeleteModal"
 
 
 const App = () => {
@@ -15,10 +16,10 @@ const App = () => {
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const [updateshow, setupShow] = useState(false);
-
+  const [deleteShow, setDeleteShow] = useState(false);
   const [update_id, setUpdate_id] = useState();
- 
   const [delete_id, setDelete_id] = useState();
+  const [delete_name, setDeletename] = useState();
 
 
   useEffect(() => {
@@ -66,7 +67,10 @@ const App = () => {
                            setUpdate_id(data.id)
                         }} />
                         <IoMdTrash className="deleteIcon" onClick={function deleteUser(){ 
-                           setUpdate_id(data.id)
+                          setDeleteShow(true);
+                           setDelete_id(data.id);
+                           setDeletename(data.username)
+                           
 
                         }}  />
                       </td>
@@ -77,7 +81,7 @@ const App = () => {
         </Table>
         <CreateModal show={show} setShow={setShow} setCreate={setCreate} create={create}/>
         <UpdateModal users={users} updateshow={updateshow} setCreate={setCreate} create={create} setupShow={setupShow} update_id={update_id}  />
-
+        <DeleteModal deleteShow={deleteShow} setDeleteShow={setDeleteShow} delete_id={delete_id} setDelete_id={setDelete_id} delete_name={delete_name} create={create} setCreate={setCreate} />
 
       </Col>
     </Col>

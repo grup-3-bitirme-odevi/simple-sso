@@ -3,7 +3,7 @@ import { Modal, Form, Dropdown, Button } from "react-bootstrap";
 import axios from 'axios'
 
 const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) => {
-    const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [user_name, setUser_Name] = useState("");
   const [user_surname, setUser_Surname] = useState("");
   const [user_password, setUser_Password] = useState("");
