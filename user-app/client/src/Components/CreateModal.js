@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Form, Dropdown, Button } from "react-bootstrap";
+import axios from "axios";
+import Alert from 'react-bootstrap/Alert'
 
 const CreateModal = ({ show, setShow }) => {
   /* Create User Datas */
@@ -10,12 +12,37 @@ const CreateModal = ({ show, setShow }) => {
   const [user_email, setUser_Mail] = useState("");
   const [user_type, setUser_Type] = useState("");
   const [selectRole, setSelectRole] = useState("");
+  const [alert, setAlert] = useState("");
+
+
 
   const forCreateClose = () => setShow(false);
+  const forCreateUser = async () => {
+    const article = {
+      username: username,
+      user_name: user_name,
+      user_surname: user_surname,
+      user_password: user_password,
+      user_email: user_email,
+      user_type: user_type
 
-  const createUser = (e) => {
-    console.log(e);
+    }
+    await axios.post('http://localhost:3100/', article)
+      .then(response => {
+        setAlert(response);
+        setShow(false);
+        setUsername("");
+        setUser_Name("")
+        setUser_Surname("")
+        setUser_Password("")
+        setUser_Mail("")
+        setUser_Type("")
+        setSelectRole("")
+      })
+
+
   };
+
 
   return (
     <>
@@ -24,7 +51,7 @@ const CreateModal = ({ show, setShow }) => {
           <Modal.Title>Create User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form className="formElementContainer" onSubmit={createUser}>
+          <Form className="formElementContainer" >
             <Form.Group className="mb-3" controlId="formBasicUserName">
               <Form.Label>Kullanıcı Adı</Form.Label>
               <Form.Control
@@ -77,7 +104,7 @@ const CreateModal = ({ show, setShow }) => {
               <Form.Label>Rol</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
-                  {selectRole === "" ? "Rolünüzü Seçiniz": selectRole}
+                  {selectRole === "" ? "Rolünüzü Seçiniz" : selectRole}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item
@@ -97,7 +124,7 @@ const CreateModal = ({ show, setShow }) => {
             <Button variant="secondary" onClick={forCreateClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" onClick={forCreateUser}>
               Create
             </Button>
           </Modal.Footer>

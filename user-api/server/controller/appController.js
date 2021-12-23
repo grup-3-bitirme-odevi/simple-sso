@@ -53,7 +53,7 @@ exports.updateUser = async (req, res) => {
 exports.getListOfUsers = async (req, res) => {
 
     await db.sequelize.query('CALL getListOfUsers () ').then(data => {
-        res.send(data)
+        res.json(data)
     })
 
 }

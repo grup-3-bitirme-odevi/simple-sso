@@ -7,6 +7,7 @@ import { IoAddCircle } from "react-icons/io5";
 import { IoMdTrash } from "react-icons/io";
 import { HiPencil } from "react-icons/hi";
 
+
 const App = () => {
   const [users, setUsers] = useState();
 
@@ -18,10 +19,11 @@ const App = () => {
     axios
       .get("http://localhost:3100/users")
       .then((data) => {
-        setUsers(data.data);
+        setUsers(data.data)
+        console.log(data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [users]);
 
   return (
     <Col className="tablesContainer" xl={12} md={12} lg={12} sm={12} xs={12}>
@@ -46,9 +48,9 @@ const App = () => {
           <tbody>
             {users === undefined
               ? undefined
-              : users.map((data, index) => {
+              : users.map((data) => {
                   return (
-                    <tr key={index}>
+                    <tr key={data.id}>
                       <td>{data.user_name}</td>
                       <td>{data.user_surname}</td>
                       <td>{data.user_email}</td>
