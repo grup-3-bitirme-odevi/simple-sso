@@ -16,6 +16,9 @@ const App = () => {
   const handleShow = () => setShow(true);
   const [updateshow, setupShow] = useState(false);
 
+  const [update_id, setUpdate_id] = useState();
+ 
+  const [delete_id, setDelete_id] = useState();
 
 
   useEffect(() => {
@@ -23,10 +26,9 @@ const App = () => {
       .get("http://localhost:3100/users")
       .then((data) => {
         setUsers(data.data);
-        console.log(data)}).finally()
+        console.log(data)})
       .catch((err) => console.log(err));
   }, [create]);
-
 
   return (
     <Col className="tablesContainer" xl={12} md={12} lg={12} sm={12} xs={12}>
@@ -59,8 +61,14 @@ const App = () => {
                       <td>{data.user_email}</td>
                       <td>{data.user_type}</td>
                       <td>
-                        <HiPencil className="updateIcon"  />
-                        <IoMdTrash className="deleteIcon"   />
+                        <HiPencil className="updateIcon"  onClick={function updateUser(){ 
+                           setupShow(true);
+                           setUpdate_id(data.id)
+                        }} />
+                        <IoMdTrash className="deleteIcon" onClick={function deleteUser(){ 
+                           setUpdate_id(data.id)
+
+                        }}  />
                       </td>
                     </tr>
                   );
@@ -68,7 +76,7 @@ const App = () => {
           </tbody>
         </Table>
         <CreateModal show={show} setShow={setShow} setCreate={setCreate} create={create}/>
-        <UpdateModal updateshow={updateshow} setupShow={setupShow}  />
+        <UpdateModal users={users} updateshow={updateshow} setCreate={setCreate} create={create} setupShow={setupShow} update_id={update_id}  />
 
 
       </Col>

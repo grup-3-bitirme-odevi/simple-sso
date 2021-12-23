@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Dropdown, Button } from "react-bootstrap";
 import axios from 'axios'
 
-const UpdateModal = ({ updateshow,setupShow,update_id}) => {
+const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) => {
     const [username, setUsername] = useState("");
   const [user_name, setUser_Name] = useState("");
   const [user_surname, setUser_Surname] = useState("");
@@ -10,12 +10,10 @@ const UpdateModal = ({ updateshow,setupShow,update_id}) => {
   const [user_email, setUser_Mail] = useState("");
   const [user_type, setUser_Type] = useState("");
   const [selectRole, setSelectRole] = useState("");
-  const [alert, setAlert] = useState("");
-
-
+  
 
   const forCreateClose = () => setupShow(false);
-  const forCreateUser = async () => {
+  const forUpdateUser = async () => {
     const article = {
       username: username,
       user_name: user_name,
@@ -24,9 +22,8 @@ const UpdateModal = ({ updateshow,setupShow,update_id}) => {
       user_email: user_email,
       user_type: user_type
     }
-    await axios.post(`http://localhost:3100/users/${update_id}`, article)
+    await axios.put(`http://localhost:3100/users/${update_id}`, article)
       .then(response => {
-        setAlert(response);
         setupShow(false);
         setUsername("");
         setUser_Name("")
@@ -118,7 +115,7 @@ const UpdateModal = ({ updateshow,setupShow,update_id}) => {
             <Button variant="secondary" onClick={forCreateClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" onClick={()=>{setCreate(create+1);forUpdateUser()}}>
               Create
             </Button>
           </Modal.Footer>
