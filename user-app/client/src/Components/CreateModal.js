@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Form, Dropdown, Button } from "react-bootstrap";
 import axios from "axios";
-import Alert from 'react-bootstrap/Alert'
 
 const CreateModal = ({ show, setShow,setCreate,create}) => {
   /* Create User Datas */

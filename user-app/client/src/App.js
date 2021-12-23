@@ -21,6 +21,14 @@ const App = () => {
   const [delete_id, setDelete_id] = useState();
   const [delete_name, setDeletename] = useState();
 
+  const [updateUsername, setUpdateusername] = useState();
+  const [updateName, setUpdatename] = useState();
+  const [updateSurname, setUpdateSurname] = useState();
+  const [updatePassword, setUpdatePassword] = useState();
+  const [updateMail, setUpdateMail] = useState();
+  const [updateType, setUpdatetype] = useState();
+
+  
 
   useEffect(() => {
     axios
@@ -64,12 +72,18 @@ const App = () => {
                       <td>
                         <HiPencil className="updateIcon"  onClick={function updateUser(){ 
                            setupShow(true);
-                           setUpdate_id(data.id)
+                           setUpdate_id(data.id);
+                           setUpdateusername(data.username);
+                           setUpdatename(data.user_name);
+                           setUpdateSurname(data.user_surname);
+                           setUpdatePassword(data.user_password);
+                           setUpdateMail(data.user_email);
+                           setUpdatetype(data.user_type);
                         }} />
                         <IoMdTrash className="deleteIcon" onClick={function deleteUser(){ 
                           setDeleteShow(true);
                            setDelete_id(data.id);
-                           setDeletename(data.username)
+                           setDeletename(data.username);
                            
 
                         }}  />
@@ -80,8 +94,34 @@ const App = () => {
           </tbody>
         </Table>
         <CreateModal show={show} setShow={setShow} setCreate={setCreate} create={create}/>
-        <UpdateModal users={users} updateshow={updateshow} setCreate={setCreate} create={create} setupShow={setupShow} update_id={update_id}  />
-        <DeleteModal deleteShow={deleteShow} setDeleteShow={setDeleteShow} delete_id={delete_id} setDelete_id={setDelete_id} delete_name={delete_name} create={create} setCreate={setCreate} />
+        <UpdateModal 
+        users={users} 
+        updateshow={updateshow} 
+        setCreate={setCreate} 
+        create={create} 
+        setupShow={setupShow} 
+        update_id={update_id}
+        updateUsername={updateUsername}
+        updateName={updateName}
+        updateSurname={updateSurname}
+        updatePassword={updatePassword}
+        updateMail={updateMail}
+        updateType={updateType}
+        setUpdateusername={setUpdateusername}
+        setUpdatename={setUpdatename}
+        setUpdateSurname={setUpdateSurname}
+        setUpdatePassword={setUpdatePassword}
+        setUpdateMail={setUpdateMail}
+        setUpdatetype={setUpdatetype}
+        />
+        <DeleteModal 
+        deleteShow={deleteShow} 
+        setDeleteShow={setDeleteShow} 
+        delete_id={delete_id} 
+        setDelete_id={setDelete_id} 
+        delete_name={delete_name} 
+        create={create} 
+        setCreate={setCreate} />
 
       </Col>
     </Col>

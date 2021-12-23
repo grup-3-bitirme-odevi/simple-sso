@@ -1,37 +1,49 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, Form, Dropdown, Button } from "react-bootstrap";
 import axios from 'axios'
 
-const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) => {
-  const [username, setUsername] = useState("");
-  const [user_name, setUser_Name] = useState("");
-  const [user_surname, setUser_Surname] = useState("");
-  const [user_password, setUser_Password] = useState("");
-  const [user_email, setUser_Mail] = useState("");
-  const [user_type, setUser_Type] = useState("");
-  const [selectRole, setSelectRole] = useState("");
+const UpdateModal = ({ 
+  users, 
+  updateshow,
+  setupShow,
+  update_id,
+  create,
+  setCreate,
+
+  updateUsername,
+  updateName, 
+  updateSurname, 
+  updatePassword, 
+  updateMail, 
+  updateType, 
+
+  setUpdateusername,
+  setUpdatename,
+  setUpdateSurname,
+  setUpdatePassword,
+  setUpdateMail,
+  setUpdatetype}) => {
   
 
   const forCreateClose = () => setupShow(false);
   const forUpdateUser = async () => {
     const article = {
-      username: username,
-      user_name: user_name,
-      user_surname: user_surname,
-      user_password: user_password,
-      user_email: user_email,
-      user_type: user_type
+      username: updateUsername,
+      user_name: updateName,
+      user_surname: updateSurname,
+      user_password: updatePassword,
+      user_email: updateMail,
+      user_type: updateType
     }
     await axios.put(`http://localhost:3100/users/${update_id}`, article)
       .then(response => {
         setupShow(false);
-        setUsername("");
-        setUser_Name("")
-        setUser_Surname("")
-        setUser_Password("")
-        setUser_Mail("")
-        setUser_Type("")
-        setSelectRole("")
+        setUpdateusername("");
+        setUpdatename("")
+        setUpdateSurname("")
+        setUpdatePassword("")
+        setUpdateMail("")
+        setUpdatetype("")
       })
 
 
@@ -49,9 +61,9 @@ const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) =
               <Form.Control
                 type="text"
                 placeholder="Kullanıcı Adınızı giriniz"
-                value={username}
+                value={updateUsername}
                 onChange={(e) => {
-                  setUsername(e.target.value);
+                  setUpdateusername(e.target.value);
                 }}
               />
             </Form.Group>
@@ -61,8 +73,8 @@ const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) =
               <Form.Control
                 type="text"
                 placeholder="İsminizi giriniz"
-                value={user_name}
-                onChange={(e) => setUser_Name(e.target.value)}
+                value={updateName}
+                onChange={(e) => setUpdatename(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicSurname">
@@ -70,8 +82,8 @@ const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) =
               <Form.Control
                 type="text"
                 placeholder="Soyisminizi giriniz"
-                value={user_surname}
-                onChange={(e) => setUser_Surname(e.target.value)}
+                value={updateSurname}
+                onChange={(e) => setUpdateSurname(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -79,8 +91,8 @@ const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) =
               <Form.Control
                 type="text"
                 placeholder="Mail adresinizi giriniz"
-                value={user_email}
-                onChange={(e) => setUser_Mail(e.target.value)}
+                value={updateMail}
+                onChange={(e) => setUpdateMail(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -88,21 +100,19 @@ const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) =
               <Form.Control
                 type="password"
                 placeholder="Şifrenizi giriniz"
-                value={user_password}
-                onChange={(e) => setUser_Password(e.target.value)}
+                value={updatePassword}
+                onChange={(e) => setUpdatePassword(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicRole">
               <Form.Label>Rol</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
-                  Rolünüzü seçiniz
+                  {updateType === "" ? "Rolünüzü Seçiniz" : updateType}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item
                     onClick={() => {
-                      setUser_Type("Admin");
-                      console.log(user_type);
                     }}
                   >
                     Admin
@@ -116,7 +126,7 @@ const UpdateModal = ({ users,updateshow,setupShow,update_id,create,setCreate}) =
               Close
             </Button>
             <Button variant="primary" type="submit" onClick={()=>{setCreate(create+1);forUpdateUser()}}>
-              Create
+              Update
             </Button>
           </Modal.Footer>
         </Modal.Body>
