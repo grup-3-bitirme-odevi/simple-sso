@@ -9,6 +9,41 @@
     border-radius: 1rem;
     overflow: hidden;
 }
+.tableFooter{
+    background-color: #064663;
+}
+.formElementContainer{
+    display: flex;
+    flex-direction: column;
+    margin: 0 1rem;
+}
+.modal-body label{
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.errorText{
+    color: red;
+}
+.modalInputs{
+    border: none;
+    border-bottom: 1px solid black;
+}
+.modalInputs, .modalDropDown{
+    padding: 5px 10px;
+}
+.modalInputs:focus-visible{
+    outline: none;
+}
+.modalButtons{
+    width: 200px;
+    height: 45px;
+    align-self: center;
+}
+.my-select{
+    display: flex;
+    width: fit-content;
+}
 .tableBody{
     overflow: scroll;
     overflow-x: hidden;

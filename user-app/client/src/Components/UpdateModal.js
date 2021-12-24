@@ -69,54 +69,65 @@ const UpdateModal = ({
             }}
           >
             <Form className="formElementContainer"  >
-              <label>Kullanıcı Adı</label>
+              <label>User Name</label>
               <Field
                 type="text"
                 name="username"
-                placeholder="Kullanıcı Adınızı giriniz" />
-              <ErrorMessage name="username" />
+                placeholder="Kullanıcı Adınızı giriniz"
+                className="modalInputs" />
+                <p className="errorText"><ErrorMessage name="username" /></p>
+              
 
 
-              <label>İsim</label>
+              <label>Name</label>
               <Field
                 type="text"
                 name="user_name"
-                placeholder="İsminizi giriniz" />
-              <ErrorMessage name="user_name" />
+                placeholder="İsminizi giriniz"
+                className="modalInputs" />
+                <p className="errorText"><ErrorMessage name="user_name" /></p>
+              
 
-              <label>Soyisim</label>
+              <label>Surname</label>
               <Field
                 type="text"
                 name="user_surname"
                 placeholder="Soyisminizi giriniz"
+                className="modalInputs"
 
               />
-              <ErrorMessage name="user_surname" />
+              <p className="errorText"><ErrorMessage name="user_surname" /></p>
+              
 
               <label>Email</label>
               <Field
                 type="text"
                 name="user_email"
                 placeholder="Mail adresinizi giriniz"
+                className="modalInputs"
 
               />
-              <ErrorMessage name="user_email" />
+              <p className="errorText"><ErrorMessage name="user_email" /></p>
+              
 
-              <label>Şifre</label>
+              <label>Password</label>
               <Field
                 type="password"
                 name="user_password"
                 placeholder="Şifrenizi giriniz"
+                className="modalInputs"
 
               />
-              <ErrorMessage name="user_password" />
-              <Field name="user_type" as="select" className="my-select">
-                <option value="Admin">Admin</option>
+              <p className="errorText"><ErrorMessage name="user_password" /></p>
+              <label>User Role</label>
+              <Field name="user_type" as="select" className="my-select modalDropDown">
                 <option value="User">User</option>
+                <option value="Admin">Admin</option>
               </Field>
-              <ErrorMessage name="user_type" />
+              <p className="errorText"><ErrorMessage name="user_type" /></p>
+              
 
-              <Button variant="primary" type="submit" >
+              <Button className="modalButtons" variant="primary" type="submit" >
                 Create
               </Button>
             </Form>

@@ -14,6 +14,8 @@ const CreateModal = ({ show, setShow }) => {
   const forCreateClose = () => setShow(false);
   useEffect(() => {
     const getCookie = cookies.get("access_token");
+    
+
     (async function () {
       await axios.post('http://localhost:3200/', userCreate, {
         headers: {
@@ -39,7 +41,7 @@ const CreateModal = ({ show, setShow }) => {
         </Modal.Header>
         <Modal.Body>
           <Formik
-            initialValues={{ username: '', user_name: '', user_surname: '', user_email: '', user_password: '',user_type:'' }}
+            initialValues={{ username: '', user_name: '', user_surname: '', user_email: '', user_password: '',user_type:'User' }}
             validationSchema={Yup.object({
               username: Yup.string()
                 .max(15, 'Must be 15 characters or less')
@@ -54,65 +56,74 @@ const CreateModal = ({ show, setShow }) => {
               user_password: Yup.string()
                 .required('No password provided.')
                 .min(8, 'Password is too short - should be 8 chars minimum.')
-                .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.'),
-              user_type:''
-
+                .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
             })}
             onSubmit={(values, { setSubmitting }) => {
               setTimeout(() => {
                 setuserCreate(values);
                 setSubmitting(false);
+                console.log(values)
               }, 400);
             }}
           >
             <Form className="formElementContainer"  >
-              <label>Kullanıcı Adı</label>
+              <label>User Name</label>
               <Field
                 type="text"
                 name="username"
-                placeholder="Kullanıcı Adınızı giriniz" />
-              <ErrorMessage name="username" />
+                placeholder="Kullanıcı Adınızı giriniz"
+                className="modalInputs" />
+              
+              <p className="errorText"><ErrorMessage name="username" /></p>
 
 
-              <label>İsim</label>
+              <label>Name</label>
               <Field
                 type="text"
                 name="user_name"
-                placeholder="İsminizi giriniz" />
-              <ErrorMessage name="user_name" />
+                placeholder="İsminizi giriniz"
+                className="modalInputs" />
+              
+              <p className="errorText"><ErrorMessage name="user_name" /></p>
 
-              <label>Soyisim</label>
+              <label>Surname</label>
               <Field
                 type="text"
                 name="user_surname"
                 placeholder="Soyisminizi giriniz"
+                className="modalInputs"
 
               />
-              <ErrorMessage name="user_surname" />
+              <p className="errorText"><ErrorMessage name="user_surname" /></p>
+              
 
               <label>Email</label>
               <Field
                 type="text"
                 name="user_email"
                 placeholder="Mail adresinizi giriniz"
+                className="modalInputs"
 
               />
-              <ErrorMessage name="user_email" />
+              <p className="errorText"><ErrorMessage name="user_email" /></p>
 
-              <label>Şifre</label>
+              <label>Password</label>
               <Field
                 type="password"
                 name="user_password"
                 placeholder="Şifrenizi giriniz"
+                className="modalInputs"
 
               />
-              <ErrorMessage name="user_password" />
-              <Field name="user_type" as="select" className="my-select">
-                <option value="Admin">Admin</option>
+              <p className="errorText"><ErrorMessage name="user_password" /></p>
+              <label>User Role</label>
+              <Field name="user_type" as="select" className="my-select modalDropDown">
                 <option value="User">User</option>
+                <option value="Admin">Admin</option>
               </Field>
-              <ErrorMessage name="user_type" />
-              <Button variant="primary" type="submit" >
+              <p className="errorText"><ErrorMessage name="user_type" /></p>
+              
+              <Button className="modalButtons"  variant="primary" type="submit" >
                 Create
               </Button>
             </Form>

@@ -9,6 +9,7 @@ import UpdateModal from "./Components/UpdateModal";
 import DeleteModal from "./Components/DeleteModal";
 import TableHead from "./Components/AppComponents/TableHead";
 import TableBody from "./Components/AppComponents/TableBody";
+import Footer from "./Components/Footer";
 
 const cookies = new Cookies();
 
@@ -97,8 +98,9 @@ const App = () => {
               setUpdateData={setUpdateData}
               setDeleteShow={setDeleteShow}
               setDelete_id={setDelete_id}
-              setDeletename={setDeletename}></TableBody>
-
+              setDeletename={setDeletename}>
+              </TableBody>
+        
           <CreateModal
               show={show}
               setShow={setShow}
@@ -120,6 +122,7 @@ const App = () => {
 
             />
           </Col>
+          <Footer/>
         </Col>
       )}
     </>
