@@ -74,25 +74,8 @@ const App = () => {
     } else{
       window.location.assign("http://localhost:3010?redirectURL="+ originURL)
     }
-  },[]);
-
-  /*
-  useEffect(() => {
-    const getCookie = cookies.get("access_token");
-      (async function(){
-      await axios.get("http://localhost:3200/users", {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+getCookie
-        }
-      })
-      .then((data) => {
-        setUsers(data.data);
-        console.log(data)})
-      .catch((err) => console.log(err));
-    })();
-  }, [create]);
-*/
+  },[create]);
+  const getscookie=cookies.get("access_token")
   return (
     <>
     {views && 
@@ -154,7 +137,7 @@ const App = () => {
           </tbody>
         </Table>
         </Col>
-        <CreateModal show={show} setShow={setShow} setCreate={setCreate} create={create}/>
+        <CreateModal show={show} setShow={setShow} setCreate={setCreate} create={create} getscookie={getscookie}/>
         <UpdateModal 
         users={users} 
         updateshow={updateshow} 
@@ -174,6 +157,7 @@ const App = () => {
         setUpdatePassword={setUpdatePassword}
         setUpdateMail={setUpdateMail}
         setUpdatetype={setUpdatetype}
+        getscookie={getscookie}
         />
         <DeleteModal 
         deleteShow={deleteShow} 
@@ -182,7 +166,8 @@ const App = () => {
         setDelete_id={setDelete_id} 
         delete_name={delete_name} 
         create={create} 
-        setCreate={setCreate} />
+        setCreate={setCreate}
+        getscookie={getscookie} />
 
       </Col>
     </Col>

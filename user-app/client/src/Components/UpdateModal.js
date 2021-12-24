@@ -22,7 +22,8 @@ const UpdateModal = ({
   setUpdateSurname,
   setUpdatePassword,
   setUpdateMail,
-  setUpdatetype}) => {
+  setUpdatetype,
+  getscookie}) => {
   
 
   const forCreateClose = () => setupShow(false);
@@ -35,7 +36,11 @@ const UpdateModal = ({
       user_email: updateMail,
       user_type: updateType
     }
-    await axios.put(`http://localhost:3200/users/${update_id}`, article)
+    await axios.put(`http://localhost:3200/users/${update_id}`, article,{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getscookie}`
+      }})
       .then(response => {
         setupShow(false);
         setUpdateusername("");
