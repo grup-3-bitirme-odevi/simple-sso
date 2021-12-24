@@ -16,10 +16,10 @@ exports.createUser = async (req, res) => {
       }
     )
     .then(() => {
-      res.send({ isSuccess: true });
+      res.status(201).json({ isSuccess: true });
     })
     .catch(() => {
-      res.send({ isSuccess: false });
+      res.status(400).json({ isSuccess: false });
     });
 };
 exports.deleteUser = async (req, res) => {
@@ -30,10 +30,10 @@ exports.deleteUser = async (req, res) => {
       },
     })
     .then(() => {
-      res.send({ isSuccess: true });
+      res.status(200).json({ isSuccess: true });
     })
     .catch(() => {
-      res.send({ isSuccess: false });
+      res.status(400).json({ isSuccess: false });
     });
 };
 
@@ -54,15 +54,17 @@ exports.updateUser = async (req, res) => {
       }
     )
     .then(() => {
-      res.send({ isSuccess: true });
+      res.status(201).json({ isSuccess: true });
     })
     .catch(() => {
-      res.send({ isSuccess: false });
+      res.status(400).json({ isSuccess: false });
     });
 };
 
 exports.getListOfUsers = async (req, res) => {
   await db.sequelize.query("CALL getListOfUsers () ").then((data) => {
-    res.json(data);
-  });
+    res.status(200).json(data);
+  }).catch(() => {
+    res.status(400).json({ isSuccess: false });
+  })
 };
