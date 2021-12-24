@@ -9,6 +9,7 @@ import { HiPencil } from "react-icons/hi";
 import UpdateModal from "./Components/UpdateModal";
 import DeleteModal from "./Components/DeleteModal"
 import { Cookies } from 'react-cookie';
+import Header from "./Components/Header";
 
 const cookies = new Cookies();
 
@@ -95,16 +96,19 @@ const App = () => {
   return (
     <>
     {views && 
-
     <Col className="tablesContainer" xl={12} md={12} lg={12} sm={12} xs={12}>
+      <Col xl={12} md={12} lg={12} sm={12} xs={12}>
+        <Header/>
+      </Col>
       <Col className="manageContainer" xl={8} md={8} lg={8} sm={8} xs={8}>
         <Col className="tableHead" xl={12} md={12} lg={12} sm={12} xs={12}>
-          <h4>Manage Employees</h4>
+          <h4>Manage Users</h4>
           <Button variant="success" onClick={handleShow}>
             {" "}
-            <IoAddCircle className="addImage" /> Add New Employee
+            <IoAddCircle className="addImage" /> Add New User
           </Button>
         </Col>
+        <Col className="tableBody" xl={12} md={12} lg={12} sm={12} xs={12}>
         <Table striped hover>
           <thead>
             <tr>
@@ -149,6 +153,7 @@ const App = () => {
                 })}
           </tbody>
         </Table>
+        </Col>
         <CreateModal show={show} setShow={setShow} setCreate={setCreate} create={create}/>
         <UpdateModal 
         users={users} 

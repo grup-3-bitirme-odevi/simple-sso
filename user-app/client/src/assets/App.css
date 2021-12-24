@@ -1,9 +1,34 @@
 .tablesContainer{
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+.manageContainer{
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.tableBody{
+    overflow: scroll;
+    overflow-x: hidden;
+    
+    max-height: 550px;
+}
+.tableBody::-webkit-scrollbar{
+    display: none;
+}
+.headerNavbar{
+    background-color: #064663;
+}
+.headerNavbar div a, .headerNavbar div{
+    color: white !important;
+}
+.dropdown-menu{
+    background: #0c1633;
 }
 .tableHead{
-    background-color: #405E7F;
+    background-color: #362F4B;
     display: flex;
     justify-content: space-between;
     padding: 1rem 1.4rem;
