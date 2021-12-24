@@ -5,12 +5,7 @@ import { IoMdTrash } from "react-icons/io";
 
 const TableBody = ({users, setupShow,
     setUpdate_id,
-    setUpdateusername,
-    setUpdatename,
-    setUpdateSurname,
-    setUpdatePassword,
-    setUpdateMail,
-    setUpdatetype,
+    setUpdateData,
     setDeleteShow,
     setDelete_id,
     setDeletename}) => {
@@ -41,12 +36,7 @@ const TableBody = ({users, setupShow,
                         <HiPencil className="updateIcon"  onClick={function updateUser(){ 
                            setupShow(true);
                            setUpdate_id(data.id);
-                           setUpdateusername(data.username);
-                           setUpdatename(data.user_name);
-                           setUpdateSurname(data.user_surname);
-                           setUpdatePassword(data.user_password);
-                           setUpdateMail(data.user_email);
-                           setUpdatetype(data.user_type);
+                           setUpdateData(data)
                         }} />
                         <IoMdTrash className="deleteIcon" onClick={function deleteUser(){ 
                           setDeleteShow(true);

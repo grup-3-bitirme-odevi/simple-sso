@@ -1,48 +1,35 @@
-import React, { useState } from "react";
-import { Modal, Form, Dropdown, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
+import * as Yup from 'yup';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Cookies } from 'react-cookie';
 
-const CreateModal = ({ show, setShow,setCreate,create, getscookie}) => {
+const CreateModal = ({ show, setShow }) => {
+
   /* Create User Datas */
-  const [username, setUsername] = useState("");
-  const [user_name, setUser_Name] = useState("");
-  const [user_surname, setUser_Surname] = useState("");
-  const [user_password, setUser_Password] = useState("");
-  const [user_email, setUser_Mail] = useState("");
-  const [user_type, setUser_Type] = useState("");
-  const [selectRole, setSelectRole] = useState("");
-
-
+  const [userCreate, setuserCreate] = useState("");
+  const cookies = new Cookies();
 
   const forCreateClose = () => setShow(false);
-  const forCreateUser = async () => {
-    const article = {
-      username: username,
-      user_name: user_name,
-      user_surname: user_surname,
-      user_password: user_password,
-      user_email: user_email,
-      user_type: user_type
-    }
-    await axios.post('http://localhost:3200/', article,{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getscookie}`
-      }})
-      .then(response => {
-        setShow(false);
-        setUsername("");
-        setUser_Name("")
-        setUser_Surname("")
-        setUser_Password("")
-        setUser_Mail("")
-        setUser_Type("")
-        setSelectRole("")
+  useEffect(() => {
+    const getCookie = cookies.get("access_token");
+    (async function () {
+      await axios.post('http://localhost:3200/', userCreate, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getCookie}`
+        }
       })
+        .then(response => {
+          setShow(false);
+        })
+    })()
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userCreate])
 
 
-  };
-
+  console.log(userCreate)
 
   return (
     <>
@@ -51,82 +38,85 @@ const CreateModal = ({ show, setShow,setCreate,create, getscookie}) => {
           <Modal.Title>Create User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form className="formElementContainer" >
-            <Form.Group className="mb-3" controlId="formBasicUserName">
-              <Form.Label>Kullanıcı Adı</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Kullanıcı Adınızı giriniz"
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-              />
-            </Form.Group>
+          <Formik
+            initialValues={{ username: '', user_name: '', user_surname: '', user_email: '', user_password: '',user_type:'' }}
+            validationSchema={Yup.object({
+              username: Yup.string()
+                .max(15, 'Must be 15 characters or less')
+                .required('Required'),
+              user_name: Yup.string()
+                .max(20, 'Must be 20 characters or less')
+                .required('Required'),
+              user_surname: Yup.string()
+                .max(15, 'Must be 15 characters or less')
+                .required('Required'),
+              user_email: Yup.string().email('Invalid email address').required('Required'),
+              user_password: Yup.string()
+                .required('No password provided.')
+                .min(8, 'Password is too short - should be 8 chars minimum.')
+                .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.'),
+              user_type:''
 
-            <Form.Group className="mb-3" controlId="formBasicName">
-              <Form.Label>İsim</Form.Label>
-              <Form.Control
+            })}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setuserCreate(values);
+                setSubmitting(false);
+              }, 400);
+            }}
+          >
+            <Form className="formElementContainer"  >
+              <label>Kullanıcı Adı</label>
+              <Field
                 type="text"
-                placeholder="İsminizi giriniz"
-                value={user_name}
-                onChange={(e) => setUser_Name(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicSurname">
-              <Form.Label>Soyisim</Form.Label>
-              <Form.Control
+                name="username"
+                placeholder="Kullanıcı Adınızı giriniz" />
+              <ErrorMessage name="username" />
+
+
+              <label>İsim</label>
+              <Field
                 type="text"
+                name="user_name"
+                placeholder="İsminizi giriniz" />
+              <ErrorMessage name="user_name" />
+
+              <label>Soyisim</label>
+              <Field
+                type="text"
+                name="user_surname"
                 placeholder="Soyisminizi giriniz"
-                value={user_surname}
-                onChange={(e) => setUser_Surname(e.target.value)}
+
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
+              <ErrorMessage name="user_surname" />
+
+              <label>Email</label>
+              <Field
                 type="text"
+                name="user_email"
                 placeholder="Mail adresinizi giriniz"
-                value={user_email}
-                onChange={(e) => setUser_Mail(e.target.value)}
+
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Şifre</Form.Label>
-              <Form.Control
+              <ErrorMessage name="user_email" />
+
+              <label>Şifre</label>
+              <Field
                 type="password"
+                name="user_password"
                 placeholder="Şifrenizi giriniz"
-                value={user_password}
-                onChange={(e) => setUser_Password(e.target.value)}
+
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicRole">
-              <Form.Label>Rol</Form.Label>
-              <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                  {selectRole === "" ? "Rolünüzü Seçiniz" : selectRole}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    onClick={() => {
-                      setUser_Type("Admin");
-                      setSelectRole("Admin");
-                    }}
-                  >
-                    Admin
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Form.Group>
-          </Form>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={forCreateClose}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit" onClick={()=>{forCreateUser();setCreate(create+1)}}>
-              Create
-            </Button>
-          </Modal.Footer>
+              <ErrorMessage name="user_password" />
+              <Field name="user_type" as="select" className="my-select">
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+              </Field>
+              <ErrorMessage name="user_type" />
+              <Button variant="primary" type="submit" >
+                Create
+              </Button>
+            </Form>
+          </Formik>
         </Modal.Body>
       </Modal>
     </>

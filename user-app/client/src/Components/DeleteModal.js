@@ -1,14 +1,18 @@
 import axios from "axios";
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
+import { Cookies } from 'react-cookie';
 
-const DeleteModal = ({deleteShow, setDeleteShow, delete_id, setDelete_id, delete_name, create, setCreate, getscookie}) => {
+const DeleteModal = ({deleteShow, setDeleteShow, delete_id, setDelete_id, delete_name}) => {
   const forDeleteClose = () => setDeleteShow(false);
+  const cookies = new Cookies();
+
   const forDeleteUser = async () => {
+    const getCookie = cookies.get("access_token");
     await axios.delete(`http://localhost:3200/users/${delete_id}`,{
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getscookie}`
+        'Authorization': `Bearer ${getCookie}`
       }});
   };
   return (
@@ -29,7 +33,6 @@ const DeleteModal = ({deleteShow, setDeleteShow, delete_id, setDelete_id, delete
               onClick={() => {
                 forDeleteUser();
                 forDeleteClose();
-                setCreate(create+1);
               }}
             >
               Delete

@@ -1,142 +1,129 @@
-import React from "react";
-import { Modal, Form, Dropdown, Button } from "react-bootstrap";
+import React,{useState,useEffect} from "react";
+import { Modal, Button } from "react-bootstrap";
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 import axios from 'axios'
+import * as Yup from 'yup';
+import { Cookies } from 'react-cookie';
 
 const UpdateModal = ({ 
-  users, 
   updateshow,
-  setupShow,
   update_id,
-  create,
-  setCreate,
+  setupShow,
+  updateData,}) => {
 
-  updateUsername,
-  updateName, 
-  updateSurname, 
-  updatePassword, 
-  updateMail, 
-  updateType, 
 
-  setUpdateusername,
-  setUpdatename,
-  setUpdateSurname,
-  setUpdatePassword,
-  setUpdateMail,
-  setUpdatetype,
-  getscookie}) => {
-  
+    const [updateCreate, setupdateCreate] = useState("");
+    const cookies = new Cookies();
+
 
   const forCreateClose = () => setupShow(false);
-  const forUpdateUser = async () => {
-    const article = {
-      username: updateUsername,
-      user_name: updateName,
-      user_surname: updateSurname,
-      user_password: updatePassword,
-      user_email: updateMail,
-      user_type: updateType
-    }
-    await axios.put(`http://localhost:3200/users/${update_id}`, article,{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getscookie}`
-      }})
-      .then(response => {
-        setupShow(false);
-        setUpdateusername("");
-        setUpdatename("")
-        setUpdateSurname("")
-        setUpdatePassword("")
-        setUpdateMail("")
-        setUpdatetype("")
-      })
+  useEffect(() => {
+    const getCookie = cookies.get("access_token");
+    (async function (){ 
+      await axios.put(`http://localhost:3200/users/${update_id}`,updateCreate,{
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getCookie}`
+        }}).then(()=>setupShow(false))
+     })()
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[updateCreate])
 
 
-  };
     return (
-        <>
-        <Modal size="lg" show={updateshow} onHide={forCreateClose}>
+      <>
+      <Modal size="lg" show={updateshow} onHide={forCreateClose}>
         <Modal.Header closeButton>
           <Modal.Title>Update User {update_id}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form className="formElementContainer" >
-            <Form.Group className="mb-3" controlId="formBasicUserName">
-              <Form.Label>Kullanıcı Adı</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Kullanıcı Adınızı giriniz"
-                value={updateUsername}
-                onChange={(e) => {
-                  setUpdateusername(e.target.value);
-                }}
-              />
-            </Form.Group>
+          <Formik
+            initialValues={{ username:updateData.username!=='' ? updateData.username:'' ,
+             user_name:updateData.user_name!=='' ? updateData.user_name:'', 
+             user_surname: updateData.user_surname!=='' ? updateData.user_surname:'', 
+             user_email: updateData.user_email!=='' ? updateData.user_email:'', 
+             user_password: updateData.user_password!=='' ? updateData.user_password:'', 
+             user_type:updateData.user_type!=='' ? updateData.user_type:'',}}
+            validationSchema={Yup.object({
+              username: Yup.string()
+                .max(15, 'Must be 15 characters or less')
+                .required('Required'),
+              user_name: Yup.string()
+                .max(20, 'Must be 20 characters or less')
+                .required('Required'),
+              user_surname: Yup.string()
+                .max(15, 'Must be 15 characters or less')
+                .required('Required'),
+              user_email: Yup.string().email('Invalid email address').required('Required'),
+              user_password: Yup.string()
+                .required('No password provided.')
+                .min(8, 'Password is too short - should be 8 chars minimum.')
+                .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
 
-            <Form.Group className="mb-3" controlId="formBasicName">
-              <Form.Label>İsim</Form.Label>
-              <Form.Control
+            })}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setupdateCreate(values);
+                setSubmitting(false);
+              }, 400);
+            }}
+          >
+            <Form className="formElementContainer"  >
+              <label>Kullanıcı Adı</label>
+              <Field
                 type="text"
-                placeholder="İsminizi giriniz"
-                value={updateName}
-                onChange={(e) => setUpdatename(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicSurname">
-              <Form.Label>Soyisim</Form.Label>
-              <Form.Control
+                name="username"
+                placeholder="Kullanıcı Adınızı giriniz" />
+              <ErrorMessage name="username" />
+
+
+              <label>İsim</label>
+              <Field
                 type="text"
+                name="user_name"
+                placeholder="İsminizi giriniz" />
+              <ErrorMessage name="user_name" />
+
+              <label>Soyisim</label>
+              <Field
+                type="text"
+                name="user_surname"
                 placeholder="Soyisminizi giriniz"
-                value={updateSurname}
-                onChange={(e) => setUpdateSurname(e.target.value)}
+
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
+              <ErrorMessage name="user_surname" />
+
+              <label>Email</label>
+              <Field
                 type="text"
+                name="user_email"
                 placeholder="Mail adresinizi giriniz"
-                value={updateMail}
-                onChange={(e) => setUpdateMail(e.target.value)}
+
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Şifre</Form.Label>
-              <Form.Control
+              <ErrorMessage name="user_email" />
+
+              <label>Şifre</label>
+              <Field
                 type="password"
+                name="user_password"
                 placeholder="Şifrenizi giriniz"
-                value={updatePassword}
-                onChange={(e) => setUpdatePassword(e.target.value)}
+
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicRole">
-              <Form.Label>Rol</Form.Label>
-              <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                  {updateType === "" ? "Rolünüzü Seçiniz" : updateType}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    onClick={() => {
-                    }}
-                  >
-                    Admin
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Form.Group>
-          </Form>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={forCreateClose}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit" onClick={()=>{setCreate(create+1);forUpdateUser()}}>
-              Update
-            </Button>
-          </Modal.Footer>
+              <ErrorMessage name="user_password" />
+              <Field name="user_type" as="select" className="my-select">
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+              </Field>
+              <ErrorMessage name="user_type" />
+
+              <Button variant="primary" type="submit" >
+                Create
+              </Button>
+            </Form>
+          </Formik>
         </Modal.Body>
       </Modal>
-        </>
+    </>
     )
 }
 

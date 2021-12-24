@@ -1,10 +1,9 @@
 import React from "react";
-import { Navbar, Container, Nav, NavDropdown, Col } from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 
 const Header = () => {
   return (
     <>
-    <Col xl={12} md={12} lg={12} sm={12} xs={12}>
       <Navbar className="mb-4 headerNavbar" expand="lg">
         <Container>
           <Navbar.Brand href="#home"><img src="#" alt="LOGO"></img></Navbar.Brand>
@@ -31,7 +30,6 @@ const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      </Col>
     </>
   );
 };

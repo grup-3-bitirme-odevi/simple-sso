@@ -15,7 +15,7 @@ const cookies = new Cookies();
 const App = () => {
   const [views, setViews] = useState(false);
   const [users, setUsers] = useState();
-  const [create, setCreate] = useState(0);
+
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const [updateshow, setupShow] = useState(false);
@@ -23,13 +23,8 @@ const App = () => {
   const [update_id, setUpdate_id] = useState();
   const [delete_id, setDelete_id] = useState();
   const [delete_name, setDeletename] = useState();
+  const [updateData, setUpdateData] = useState(''); 
 
-  const [updateUsername, setUpdateusername] = useState();
-  const [updateName, setUpdatename] = useState();
-  const [updateSurname, setUpdateSurname] = useState();
-  const [updatePassword, setUpdatePassword] = useState();
-  const [updateMail, setUpdateMail] = useState();
-  const [updateType, setUpdatetype] = useState();
 
   useEffect(() => {
     const getCookie = cookies.get("access_token");
@@ -45,22 +40,7 @@ const App = () => {
             })
             .then((response) => {
               if (response.data.stat === "success") {
-                cookies.set("access_token", response.data.access_token);
-                const getCookie = cookies.get("access_token");
-                (async function () {
-                  await axios
-                    .get("http://localhost:3200/users", {
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + getCookie,
-                      },
-                    })
-                    .then((data) => {
-                      setUsers(data.data);
-                      console.log(data);
-                    })
-                    .catch((err) => console.log(err));
-                })();
+                cookies.set("access_token", response.data.access_token)
               }
             })
             .catch((error) => {
@@ -79,8 +59,22 @@ const App = () => {
     } else {
       window.location.assign("http://localhost:3010?redirectURL=" + originURL);
     }
-  }, [create]);
-  const getscookie = cookies.get("access_token");
+  }, []);
+  useEffect(() => {
+    const getCookie = cookies.get("access_token");
+   (async function(){
+     await axios.get("http://localhost:3200/users", {
+       headers: {
+         'Content-Type': 'application/json',
+         'Authorization': 'Bearer '+getCookie
+       }
+     })
+     .then((data) => {
+       setUsers(data.data);
+       console.log(data)})
+     .catch((err) => console.log(err));
+   })();
+ }, [show,updateshow,deleteShow])
   return (
     <>
       {views && (
@@ -100,44 +94,22 @@ const App = () => {
               users={users}
               setupShow={setupShow}
               setUpdate_id={setUpdate_id}
-              setUpdateusername={setUpdateusername}
-              setUpdatename={setUpdatename}
-              setUpdateSurname={setUpdateSurname}
-              setUpdatePassword={setUpdatePassword}
-              setUpdateMail={setUpdateMail}
-              setUpdatetype={setUpdatetype}
+              setUpdateData={setUpdateData}
               setDeleteShow={setDeleteShow}
               setDelete_id={setDelete_id}
-              setDeletename={setDeletename}
-            />
+              setDeletename={setDeletename}></TableBody>
 
-            <CreateModal
+          <CreateModal
               show={show}
               setShow={setShow}
-              setCreate={setCreate}
-              create={create}
-              getscookie={getscookie}
             />
             <UpdateModal
               users={users}
               updateshow={updateshow}
-              setCreate={setCreate}
-              create={create}
               setupShow={setupShow}
               update_id={update_id}
-              updateUsername={updateUsername}
-              updateName={updateName}
-              updateSurname={updateSurname}
-              updatePassword={updatePassword}
-              updateMail={updateMail}
-              updateType={updateType}
-              setUpdateusername={setUpdateusername}
-              setUpdatename={setUpdatename}
-              setUpdateSurname={setUpdateSurname}
-              setUpdatePassword={setUpdatePassword}
-              setUpdateMail={setUpdateMail}
-              setUpdatetype={setUpdatetype}
-              getscookie={getscookie}
+              updateData={updateData}
+ 
             />
             <DeleteModal
               deleteShow={deleteShow}
@@ -145,9 +117,7 @@ const App = () => {
               delete_id={delete_id}
               setDelete_id={setDelete_id}
               delete_name={delete_name}
-              create={create}
-              setCreate={setCreate}
-              getscookie={getscookie}
+
             />
           </Col>
         </Col>
