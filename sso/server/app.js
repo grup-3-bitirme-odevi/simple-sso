@@ -3,6 +3,7 @@ const cors = require('cors');
 // DB Connection
 require('./config/databaseConfig')
 
+// Route Path
 const ssoRoute = require("./route/ssoRoute");
 
 // Express Start

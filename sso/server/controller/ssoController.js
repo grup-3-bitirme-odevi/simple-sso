@@ -8,25 +8,26 @@ const Token = db.token;
 // Request: (username, password)
 // Response: If success, (success, user_id, access_token) / else (fail)
 exports.IsAuthorized = async (req, res) => {
-	// User params catching from req
+  // User params catching from req
   const username = req.body.username;
   const password = req.body.password;
   const reqRedirectUrl = req.body.url;
 
-  let textUrl;
+  try {
+    let textUrl;
 
-		// Check user params
-		if(!(username && password && reqRedirectUrl)){
-			return res.status(409).json({
-				stat: "fail",
-				message: "All input are required."
-			});
-		}
+    // Check user params
+    if (!(username && password && reqRedirectUrl)) {
+      return res.status(409).json({
+        stat: "fail",
+        message: "All input are required.",
+      });
+    }
 
-		// If there is user params, check user info
+    // If there is user params, check user info
     const user = await User.findOne({ where: { username: username } });
 
-		// If is not found
+    // If is not found
     if (!user) {
       return res.status(409).json({
         stat: "fail",
@@ -34,7 +35,7 @@ exports.IsAuthorized = async (req, res) => {
       });
     }
 
-		// If user found, password not correct
+    // If user found, password not correct
     if (user.dataValues.user_password != password) {
       return res.status(409).json({
         stat: "fail",
@@ -42,17 +43,29 @@ exports.IsAuthorized = async (req, res) => {
       });
     }
 
-    if(user.dataValues.user_type=='admin'){
-      const url = await Url.findAll({attributes: ['url'], raw: true});
-      const mapUrl = url.map(x =>{ return x.url }).join(", ")
+    if (user.dataValues.user_type == "admin") {
+      const url = await Url.findAll({ attributes: ["url"], raw: true });
+      const mapUrl = url
+        .map((x) => {
+          return x.url;
+        })
+        .join(", ");
       textUrl = mapUrl;
     } else {
-      const url = await Url.findAll({where:{url_type:user.dataValues.user_type},attributes: ['url'], raw: true});
-      const mapUrl = url.map(x =>{ return x.url }).join(", ")
+      const url = await Url.findAll({
+        where: { url_type: user.dataValues.user_type },
+        attributes: ["url"],
+        raw: true,
+      });
+      const mapUrl = url
+        .map((x) => {
+          return x.url;
+        })
+        .join(", ");
       textUrl = mapUrl;
     }
 
-    var regexUrl = new RegExp(reqRedirectUrl, 'g');
+    var regexUrl = new RegExp(reqRedirectUrl, "g");
     if (!textUrl.match(regexUrl)) {
       return res.status(409).json({
         stat: "fail",
@@ -60,12 +73,12 @@ exports.IsAuthorized = async (req, res) => {
       });
     }
 
-		// If password correct; generate token guid and TTL
+    // If password correct; generate token guid and TTL
     const access_token = uuidv4();
     const date = new Date(Date.now());
     date.setMinutes(date.getMinutes() + 1);
 
-		// Create user token
+    // Create user token
     await Token.create({
       ip: "127.0.0.1",
       url: textUrl,
@@ -73,29 +86,34 @@ exports.IsAuthorized = async (req, res) => {
       ttl: date.toString(),
     });
 
-		// Return success message and token information.
+    // Return success message and token information.
     return res.status(200).json({
       stat: "success",
       message: "Login successfull",
       user_id: user.dataValues.id,
       access_token: access_token,
     });
+  } catch (err) {
+    return res.status(500).json({
+      err,
+    });
+  }
 };
 
-// Request: (token, url, ip) 
+// Request: (token, url, ip)
 // Response: If success, (success, access_token) / else (fail)
 exports.IsAccessTokenValid = async (req, res) => {
-	// Token params catching from req
+  // Token params catching from req
   const reqToken = req.body.token || req.headers["authorization"];
   const reqIP = "127.0.0.1";
 
-  console.log(reqToken)
+  console.log(reqToken);
 
   try {
-		// Create now date
+    // Create now date
     const date = new Date(Date.now());
 
-		// Check token params
+    // Check token params
     if (!reqToken) {
       return res.status(409).json({
         stat: "fail",
@@ -103,12 +121,12 @@ exports.IsAccessTokenValid = async (req, res) => {
       });
     }
 
-		// If there is token params, check token info
+    // If there is token params, check token info
     const getToken = await Token.findAll({
       where: { ip: reqIP, token: reqToken },
     });
 
-		// If is not found
+    // If is not found
     if (getToken.length <= 0) {
       return res.status(409).json({
         stat: "fail",
@@ -116,13 +134,13 @@ exports.IsAccessTokenValid = async (req, res) => {
       });
     }
 
-		// If token found, get id and ttl
+    // If token found, get id and ttl
     const getTokenObj = { ...getToken };
     const getTokenId = getTokenObj[0].id;
     const getTokenTTL = getTokenObj[0].ttl;
     const tokenTTL = new Date(getTokenTTL);
 
-		// If now date bigger than token TTL
+    // If now date bigger than token TTL
     if (date > tokenTTL) {
       await Token.destroy({ where: { token: reqToken } });
       return res.status(409).json({
@@ -130,41 +148,40 @@ exports.IsAccessTokenValid = async (req, res) => {
         message: "You are not authorized.",
       });
     } else {
-      
-      if(req.body.from=="middleware"){
+      if (req.body.from == "middleware") {
         return res.status(200).json({
-          stat: "success"
+          stat: "success",
         });
       }
-			// Create new token
+      // Create new token
       const access_token = uuidv4();
-			// Update old token
+      // Update old token
       await Token.update(
         { token: access_token },
         { where: { id: getTokenId } }
       );
-			// If token update, return success and token
+      // If token update, return success and token
       return res.status(200).json({
         stat: "success",
         access_token: access_token,
       });
     }
   } catch (err) {
-		// Catch error
+    // Catch error
     return res.status(500).json({
       err,
     });
   }
 };
 
-// Request: (url) 
+// Request: (url)
 // Response: If success, (success, access_token) / else (fail)
 exports.CheckUrl = async (req, res) => {
-	// URL params catching from req
+  // URL params catching from req
   const url = req.body.url;
 
   try {
-		// Check url params
+    // Check url params
     if (!url) {
       return res.status(409).json({
         stat: "fail",
@@ -172,10 +189,10 @@ exports.CheckUrl = async (req, res) => {
       });
     }
 
-		// If there is token params, check url 
+    // If there is token params, check url
     const checkUrl = await Url.findOne({ where: { url: url } });
 
-		// If is not found
+    // If is not found
     if (!checkUrl) {
       return res.status(401).json({
         stat: "fail",
@@ -183,12 +200,12 @@ exports.CheckUrl = async (req, res) => {
       });
     }
 
-		// If url found, return success
+    // If url found, return success
     return res.status(200).json({
       stat: "success",
     });
   } catch (err) {
-		// Catch error
+    // Catch error
     return res.status(500).json({
       err,
     });
