@@ -1,6 +1,5 @@
 const db = require('../model');
 
-
 exports.createUser = async (req, res) => {
     await db.sequelize.query('CALL createUser (:username, :user_name, :user_surname, :user_password, :user_email, :user_type)',
         {

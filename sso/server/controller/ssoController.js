@@ -13,7 +13,8 @@ exports.IsAuthorized = async (req, res) => {
   const password = req.body.password;
   const reqRedirectUrl = req.body.url;
 
-  try {
+  let textUrl;
+
 		// Check user params
 		if(!(username && password && reqRedirectUrl)){
 			return res.status(409).json({
@@ -41,6 +42,24 @@ exports.IsAuthorized = async (req, res) => {
       });
     }
 
+    if(user.dataValues.user_type=='admin'){
+      const url = await Url.findAll({attributes: ['url'], raw: true});
+      const mapUrl = url.map(x =>{ return x.url }).join(", ")
+      textUrl = mapUrl;
+    } else {
+      const url = await Url.findAll({where:{url_type:user.dataValues.user_type},attributes: ['url'], raw: true});
+      const mapUrl = url.map(x =>{ return x.url }).join(", ")
+      textUrl = mapUrl;
+    }
+
+    var regexUrl = new RegExp(reqRedirectUrl, 'g');
+    if (!textUrl.match(regexUrl)) {
+      return res.status(409).json({
+        stat: "fail",
+        message: "You are not authorized this url.",
+      });
+    }
+
 		// If password correct; generate token guid and TTL
     const access_token = uuidv4();
     const date = new Date(Date.now());
@@ -49,7 +68,7 @@ exports.IsAuthorized = async (req, res) => {
 		// Create user token
     await Token.create({
       ip: "127.0.0.1",
-      url: reqRedirectUrl,
+      url: textUrl,
       token: access_token,
       ttl: date.toString(),
     });
@@ -57,16 +76,10 @@ exports.IsAuthorized = async (req, res) => {
 		// Return success message and token information.
     return res.status(200).json({
       stat: "success",
+      message: "Login successfull",
       user_id: user.dataValues.id,
       access_token: access_token,
     });
-
-  } catch (err) {
-		// Catch error
-    return res.status(500).json({
-      err,
-    });
-  }
 };
 
 // Request: (token, url, ip) 
@@ -75,6 +88,8 @@ exports.IsAccessTokenValid = async (req, res) => {
 	// Token params catching from req
   const reqToken = req.body.token || req.headers["authorization"];
   const reqIP = "127.0.0.1";
+
+  console.log(reqToken)
 
   try {
 		// Create now date
@@ -115,6 +130,12 @@ exports.IsAccessTokenValid = async (req, res) => {
         message: "You are not authorized.",
       });
     } else {
+      
+      if(req.body.from=="middleware"){
+        return res.status(200).json({
+          stat: "success"
+        });
+      }
 			// Create new token
       const access_token = uuidv4();
 			// Update old token
@@ -124,7 +145,7 @@ exports.IsAccessTokenValid = async (req, res) => {
       );
 			// If token update, return success and token
       return res.status(200).json({
-        message: "success",
+        stat: "success",
         access_token: access_token,
       });
     }
@@ -137,7 +158,7 @@ exports.IsAccessTokenValid = async (req, res) => {
 };
 
 // Request: (url) 
-// Response: If success, (success) / else (fail)
+// Response: If success, (success, access_token) / else (fail)
 exports.CheckUrl = async (req, res) => {
 	// URL params catching from req
   const url = req.body.url;
@@ -164,7 +185,7 @@ exports.CheckUrl = async (req, res) => {
 
 		// If url found, return success
     return res.status(200).json({
-      message: "success",
+      stat: "success",
     });
   } catch (err) {
 		// Catch error

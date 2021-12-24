@@ -35,7 +35,7 @@ const UpdateModal = ({
       user_email: updateMail,
       user_type: updateType
     }
-    await axios.put(`http://localhost:3100/users/${update_id}`, article)
+    await axios.put(`http://localhost:3200/users/${update_id}`, article)
       .then(response => {
         setupShow(false);
         setUpdateusername("");

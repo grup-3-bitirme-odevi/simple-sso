@@ -5,7 +5,7 @@ import { Modal, Button } from "react-bootstrap";
 const DeleteModal = ({deleteShow, setDeleteShow, delete_id, setDelete_id, delete_name, create, setCreate}) => {
   const forDeleteClose = () => setDeleteShow(false);
   const forDeleteUser = async () => {
-    await axios.delete(`http://localhost:3100/users/${delete_id}`);
+    await axios.delete(`http://localhost:3200/users/${delete_id}`);
   };
   return (
     <>

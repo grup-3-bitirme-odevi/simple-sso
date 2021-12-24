@@ -24,7 +24,7 @@ const CreateModal = ({ show, setShow,setCreate,create}) => {
       user_email: user_email,
       user_type: user_type
     }
-    await axios.post('http://localhost:3100/', article)
+    await axios.post('http://localhost:3200/', article)
       .then(response => {
         setShow(false);
         setUsername("");

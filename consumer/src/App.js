@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { Cookies } from 'react-cookie';
 import axios from "axios";
+
 const cookies = new Cookies();
 
 function App() {
@@ -12,17 +13,19 @@ function App() {
     if(getCookie !== undefined && getCookie !== null && getCookie !== ""){
       (async function(){
         try{
-          const isAccessTokenValid = await axios.post('http://localhost:3100/validate',{
+          await axios.post('http://localhost:3100/validate',{
             token: getCookie,
             url: originURL
+          }).then(response => {
+            if(response.data.stat==='success'){
+              cookies.set('access_token',response.data.access_token);
+            }
+          }).catch(error => {
+            if(error.response.data.stat==='fail'){
+              cookies.remove("access_token");
+              window.location.assign("http://localhost:3010?redirectURL="+ originURL)
+            } 
           });
-          if(isAccessTokenValid.data.message==='fail'){
-            cookies.remove("access_token");
-            window.location.assign("http://localhost:3010?redirectURL="+ originURL)
-          } else{
-            cookies.set('access_token',isAccessTokenValid.data.access_token);
-          }
-          
         } catch(err){
           console.log(err);
         }
@@ -33,11 +36,6 @@ function App() {
     }
   },[])
 
-
-  /*
-    cookies.set('tokenosss','wqeREQWADaa3525256weTEWTGWEdqw21e',{path:'/'})
-    console.log(cookies.get('tokenosss'))
-  */
   return (
     <div className="App">
       {views && "consumer page"}

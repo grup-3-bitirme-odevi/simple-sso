@@ -8,9 +8,13 @@ import { IoMdTrash } from "react-icons/io";
 import { HiPencil } from "react-icons/hi";
 import UpdateModal from "./Components/UpdateModal";
 import DeleteModal from "./Components/DeleteModal"
+import { Cookies } from 'react-cookie';
+
+const cookies = new Cookies();
 
 
 const App = () => {
+  const [views, setViews] = useState(false);
   const [users, setUsers] = useState();
   const [create,setCreate] = useState(0)
   const [show, setShow] = useState(false);
@@ -28,18 +32,70 @@ const App = () => {
   const [updateMail, setUpdateMail] = useState();
   const [updateType, setUpdatetype] = useState();
 
-  
-
   useEffect(() => {
-    axios
-      .get("http://localhost:3100/users")
+    const getCookie = cookies.get("access_token");
+    const originURL = window.location.origin;
+
+    if(getCookie !== undefined && getCookie !== null && getCookie !== ""){
+      (async function(){
+        try{
+          await axios.post('http://localhost:3100/validate',{
+            token: getCookie,
+            url: originURL
+          }).then(response => {
+            if(response.data.stat==='success'){
+              cookies.set('access_token',response.data.access_token);
+              const getCookie = cookies.get("access_token");
+              (async function(){
+                await axios.get("http://localhost:3200/users", {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+getCookie
+                  }
+                })
+                .then((data) => {
+                  setUsers(data.data);
+                  console.log(data)})
+                .catch((err) => console.log(err));
+              })();
+            }
+          }).catch(error => {
+            if(error.response.data.stat==='fail'){
+              cookies.remove("access_token");
+              window.location.assign("http://localhost:3010?redirectURL="+ originURL)
+            } 
+          });
+        } catch(err){
+          console.log(err);
+        }
+      })();
+      setViews(true);
+    } else{
+      window.location.assign("http://localhost:3010?redirectURL="+ originURL)
+    }
+  },[]);
+
+  /*
+  useEffect(() => {
+    const getCookie = cookies.get("access_token");
+      (async function(){
+      await axios.get("http://localhost:3200/users", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+getCookie
+        }
+      })
       .then((data) => {
         setUsers(data.data);
         console.log(data)})
       .catch((err) => console.log(err));
+    })();
   }, [create]);
-
+*/
   return (
+    <>
+    {views && 
+
     <Col className="tablesContainer" xl={12} md={12} lg={12} sm={12} xs={12}>
       <Col className="manageContainer" xl={8} md={8} lg={8} sm={8} xs={8}>
         <Col className="tableHead" xl={12} md={12} lg={12} sm={12} xs={12}>
@@ -125,6 +181,8 @@ const App = () => {
 
       </Col>
     </Col>
+    }
+    </>
   );
 };
 

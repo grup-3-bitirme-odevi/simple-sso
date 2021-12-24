@@ -3,6 +3,8 @@ import axios from 'axios';
 import { sha256 } from 'js-sha256';
 import { Cookies } from 'react-cookie';
 import { Form, Button } from "react-bootstrap";
+import { ToastContainer, toast } from 'react-toastify';
+
 import "./assets/App.css"
 const cookies = new Cookies();
 
@@ -11,6 +13,16 @@ function App() {
   const [redirect, setRedirect] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+ 
+  const notify = (args) => {
+    const data = args.data;
+    console.log(data);
+    if (data.stat === 'success') {
+        toast.success(data.message)
+    } else if (data.stat === 'fail') {
+        toast.error(data.message)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,39 +30,38 @@ function App() {
     const salt="qwe123asd123zxc";
     var redURL = window.location.search;
     redURL = redURL.replace("?redirectURL=", '');
-    const response = await axios.post("http://localhost:3100/",{
+    await axios.post("http://localhost:3100/",{
       url:redURL, 
       username:username,
       password:sha256(password+salt)
+    }).then(response => {
+      if(response.data.stat === 'success'){
+        notify(response)
+        cookies.set("access_token", response.data.access_token)
+        window.location.assign(redURL);
+      }
+    }).catch(error => {
+      notify(error.response)
     });
-    console.log(response.data.message)
-    if (response.data.message === "success"){
-      cookies.set("access_token", response.data.access_token)
-      window.location.assign(redURL);
-
-    }
   }
 
   useEffect(() => {
-    const getCookie = cookies.get("access_token");
+    const getCookie = cookies.get("access_token"); // test
     var redURL = window.location.search;
     redURL = redURL.replace("?redirectURL=", '');
     const redirectQuery = window.location.search.split("=")[0];
-
-    const getCookie2 = cookies.getAll();
-    console.log(getCookie2)
-
 
     if(redirectQuery==="?redirectURL"){
       if(redURL !== "" && redURL !== null && redURL.length !== 0){
         (async function (){
           try{
-            const urlValid = await axios.post("http://localhost:3100/checkurl", {url: redURL});
-            console.log(urlValid)
-
-            if(urlValid.data.message==="success"){
-              setRedirect(true);
-            }
+            await axios.post("http://localhost:3100/checkurl", {
+              url: redURL
+            }).then(response => {
+              if(response.data.stat==="success"){
+                setRedirect(true);
+              }
+            });
           } catch(err){
             console.log(err);
           }
@@ -60,7 +71,6 @@ function App() {
     else{
       setRedirect(false);
     }
-
   },[])
 
   return (
@@ -80,6 +90,7 @@ function App() {
           <Button type="submit">
             Giriş Yap
           </Button>
+          <ToastContainer />
         </Form>
       </div>
         }
