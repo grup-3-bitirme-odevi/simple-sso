@@ -92,9 +92,7 @@ const App = () => {
           sm={12}
           xs={12}
         >
-          <Col xl={12} md={12} lg={12} sm={12} xs={12}>
-            <Header />
-          </Col>
+          <Header />
           <Col className="manageContainer" xl={8} md={8} lg={8} sm={8} xs={8}>
             <TableHead handleShow={handleShow} />
 
