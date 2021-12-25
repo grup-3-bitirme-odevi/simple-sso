@@ -87,7 +87,7 @@ function App() {
             <Form.Label>Şifre</Form.Label>
             <Form.Control type="password" value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Şifrenizi Giriniz"  />
           </Form.Group>
-          <Button type="submit">
+          <Button type="submit" className='loginBtn' >
             Giriş Yap
           </Button>
           <ToastContainer />

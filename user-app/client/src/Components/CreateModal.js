@@ -15,23 +15,23 @@ const CreateModal = ({ show, setShow }) => {
   useEffect(() => {
     const getCookie = cookies.get("access_token");
     
-
-    (async function () {
-      await axios.post('http://localhost:3200/', userCreate, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getCookie}`
-        }
-      })
-        .then(response => {
-          setShow(false);
+    if(!!userCreate){
+      (async function () {
+        await axios.post('http://localhost:3200/', userCreate, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie}`
+          }
         })
-    })()
+          .then(response => {
+            setShow(false);
+          })
+      })()
+    }
  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userCreate])
 
 
-  console.log(userCreate)
 
   return (
     <>
@@ -62,7 +62,6 @@ const CreateModal = ({ show, setShow }) => {
               setTimeout(() => {
                 setuserCreate(values);
                 setSubmitting(false);
-                console.log(values)
               }, 400);
             }}
           >

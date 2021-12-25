@@ -19,13 +19,16 @@ const UpdateModal = ({
   const forCreateClose = () => setupShow(false);
   useEffect(() => {
     const getCookie = cookies.get("access_token");
-    (async function (){ 
-      await axios.put(`http://localhost:3200/users/${update_id}`,updateCreate,{
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getCookie}`
-        }}).then(()=>setupShow(false))
-     })()
+    if(!!update_id){
+      (async function (){ 
+        await axios.put(`http://localhost:3200/users/${update_id}`,updateCreate,{
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie}`,
+            
+          }}).then(()=>setupShow(false))
+       })()
+      }
      // eslint-disable-next-line react-hooks/exhaustive-deps
   },[updateCreate])
 
