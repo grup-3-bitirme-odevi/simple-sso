@@ -1,5 +1,7 @@
 const db = require("../model");
 const { v4: uuidv4 } = require("uuid");
+const sha256 = require('js-sha256');
+const bcrypt = require('bcrypt');
 
 const User = db.user;
 const Url = db.url;
@@ -9,21 +11,41 @@ const Token = db.token;
 // Response: If success, (success, user_id, access_token) / else (fail)
 exports.IsAuthorized = async (req, res) => {
   // User params catching from req
-  const username = req.body.username;
-  const password = req.body.password;
-  const reqRedirectUrl = req.body.url;
+  const {redirectionURL} = req.query;
+  const {username, password, pass_hash} = req.body;
+  let getPassword = password;
+  const reqIp = "127.0.0.1";
+  const salt="qwe123asd123zxc";
 
   try {
     let textUrl;
 
-    // Check user params
-    if (!(username && password && reqRedirectUrl)) {
+    if(!redirectionURL){
       return res.status(409).json({
         stat: "fail",
-        message: "All input are required.",
+        message: "Redirect URL is reqiured."
+      })
+    }
+
+    if(pass_hash == null && pass_hash == undefined){
+      return res.status(409).json({
+        stat: "fail",
+        message: "All inputs are required.",
       });
     }
 
+    // Check user params
+    if (!(username && password)) {
+      return res.status(409).json({
+        stat: "fail",
+        message: "All inputs are required.",
+      });
+    }
+
+    if(pass_hash){
+      getPassword = sha256(getPassword+salt);
+    }
+    
     // If there is user params, check user info
     const user = await User.findOne({ where: { username: username } });
 
@@ -34,9 +56,11 @@ exports.IsAuthorized = async (req, res) => {
         message: "User not found.",
       });
     }
+    
+    const decryptedPassword = await bcrypt.compare(getPassword, user.user_password)
 
     // If user found, password not correct
-    if (user.dataValues.user_password != password) {
+    if (!decryptedPassword) {
       return res.status(409).json({
         stat: "fail",
         message: "Password not match.",
@@ -65,32 +89,33 @@ exports.IsAuthorized = async (req, res) => {
       textUrl = mapUrl;
     }
 
-    var regexUrl = new RegExp(reqRedirectUrl, "g");
+    var regexUrl = new RegExp(redirectionURL, "g");
     if (!textUrl.match(regexUrl)) {
       return res.status(409).json({
         stat: "fail",
-        message: "You are not authorized this url.",
+        message: "URL not found.",
       });
     }
 
     // If password correct; generate token guid and TTL
     const access_token = uuidv4();
     const date = new Date(Date.now());
-    date.setMinutes(date.getMinutes() + 1);
+    date.setMinutes(date.getMinutes() + 5);
 
     // Create user token
     await Token.create({
-      ip: "127.0.0.1",
+      ip: reqIp,
       url: textUrl,
       token: access_token,
       ttl: date.toString(),
+      user_id: user.id
     });
 
     // Return success message and token information.
     return res.status(200).json({
       stat: "success",
-      message: "Login successfull",
-      user_id: user.dataValues.id,
+      message: "login success",
+      user_id: user.id,
       access_token: access_token,
     });
   } catch (err) {
@@ -104,10 +129,8 @@ exports.IsAuthorized = async (req, res) => {
 // Response: If success, (success, access_token) / else (fail)
 exports.IsAccessTokenValid = async (req, res) => {
   // Token params catching from req
-  const reqToken = req.body.token || req.headers["authorization"];
+  const reqToken = req.headers["authorization"];
   const reqIP = "127.0.0.1";
-
-  console.log(reqToken);
 
   try {
     // Create now date
@@ -121,9 +144,19 @@ exports.IsAccessTokenValid = async (req, res) => {
       });
     }
 
+    const bearerTag = reqToken.split(" ")[0];
+    const token = reqToken.split(" ")[1];
+  
+    if (bearerTag != "Bearer") {
+      return res.json({
+        stat: "fail",
+        messsage: "Authorization need Bearer Token"
+      });
+    }
+
     // If there is token params, check token info
     const getToken = await Token.findAll({
-      where: { ip: reqIP, token: reqToken },
+      where: { ip: reqIP, token: token },
     });
 
     // If is not found
@@ -142,68 +175,26 @@ exports.IsAccessTokenValid = async (req, res) => {
 
     // If now date bigger than token TTL
     if (date > tokenTTL) {
-      await Token.destroy({ where: { token: reqToken } });
+      //await Token.destroy({ where: { token: token } });
       return res.status(409).json({
         stat: "fail",
         message: "You are not authorized.",
       });
     } else {
-      if (req.body.from == "middleware") {
-        return res.status(200).json({
-          stat: "success",
-        });
-      }
+      const date = new Date(Date.now());
+      date.setMinutes(date.getMinutes() + 30);
+
       // Create new token
-      const access_token = uuidv4();
-      // Update old token
       await Token.update(
-        { token: access_token },
+        { ttl: date.toString() },
         { where: { id: getTokenId } }
       );
+
       // If token update, return success and token
       return res.status(200).json({
-        stat: "success",
-        access_token: access_token,
+        stat: "success"
       });
     }
-  } catch (err) {
-    // Catch error
-    return res.status(500).json({
-      err,
-    });
-  }
-};
-
-// Request: (url)
-// Response: If success, (success, access_token) / else (fail)
-exports.CheckUrl = async (req, res) => {
-  // URL params catching from req
-  const url = req.body.url;
-
-  try {
-    // Check url params
-    if (!url) {
-      return res.status(409).json({
-        stat: "fail",
-        message: "URL input required",
-      });
-    }
-
-    // If there is token params, check url
-    const checkUrl = await Url.findOne({ where: { url: url } });
-
-    // If is not found
-    if (!checkUrl) {
-      return res.status(401).json({
-        stat: "fail",
-        message: "You are not authorized .",
-      });
-    }
-
-    // If url found, return success
-    return res.status(200).json({
-      stat: "success",
-    });
   } catch (err) {
     // Catch error
     return res.status(500).json({
