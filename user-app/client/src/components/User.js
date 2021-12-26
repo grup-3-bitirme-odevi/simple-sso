@@ -2,12 +2,18 @@ import { useState } from 'react';
 import EditForm from './EditForm';
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
-const User = ({user, setIsDelete, setDeleteID, setDeletedName}) => {
+const User = ({user, setIsDelete, setDeleteID, setDeletedName, token, setIsEdit}) => {
 
     const [editShow, setEditShow] = useState(false);
 
-    const editHandleClose = () => setEditShow(false);
-    const editHandleShow = () => setEditShow(true);
+    const editHandleClose = () => {
+        setIsEdit(false);
+        setEditShow(false);
+    }
+    const editHandleShow = () => {
+        setIsEdit(true);
+        setEditShow(true);
+    }
 
     const deleteHandleShow = () => setIsDelete(true);
 
@@ -32,7 +38,7 @@ const User = ({user, setIsDelete, setDeleteID, setDeletedName}) => {
                 <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <EditForm />
+                {user && <EditForm token={token} user={user} setIsEdit={setIsEdit} setEditShow={setEditShow}/>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={editHandleClose} variant="secondary">
