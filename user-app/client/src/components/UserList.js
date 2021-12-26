@@ -3,12 +3,29 @@ import User from './User';
 import AddForm from './AddForm';
 import { Col, Table, Button, Modal } from "react-bootstrap";
 import { BsFillPlusCircleFill } from "react-icons/bs";
+import axios from 'axios';
 
-const UserList = () => {
+const UserList = (token) => {
 
+    const [users, setUsers] = useState();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    useEffect(() => {
+        (async function(){
+            await axios.get('http://localhost:3200/users/',{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+token.token
+                  }
+            }).then((response) => {
+                setUsers(response.data.data);
+            }).catch((error) => {
+                console.log(error);
+            })
+        })()
+    },[]);
 
     return(
         <>
@@ -20,6 +37,7 @@ const UserList = () => {
         <Table striped hover>
           <thead>
             <tr>
+              <th>Username</th>
               <th>Name</th>
               <th>Surname</th>
               <th>Email</th>
@@ -28,7 +46,13 @@ const UserList = () => {
             </tr>
           </thead>
           <tbody>
-            <User />
+                {users &&
+					users.map((user) => (
+						<tr key={user.id}>
+							<User user={user} />
+						</tr>
+					))
+				}
           </tbody>
         </Table>
 

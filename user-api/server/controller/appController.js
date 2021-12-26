@@ -183,7 +183,7 @@ exports.getListOfUsers = async (req, res) => {
   await db.sequelize.query("CALL getListOfUsers () ").then((data) => {
     res.status(200).json({
       "stat": "success",
-      "message": data
+      "data": data
     });
   }).catch(() => {
     res.status(500).json({ 
