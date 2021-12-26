@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "sequelize": "^7.0.0-alpha.2",
+    "sequelize-cli": "^6.3.0"
+  },
+  "devDependencies": {
+    "sequelize-mock": "^0.10.2"
+  },
+  "name": "test",
+  "version": "1.0.0",
+  "main": "appController.test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
