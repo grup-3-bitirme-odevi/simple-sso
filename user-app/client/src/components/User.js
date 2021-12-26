@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import EditForm from './EditForm';
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
-const User = (user) => {
+const User = ({user}) => {
 
-    console.log(user.user.username)
     const [editShow, setEditShow] = useState(false);
     const [deleteShow, setDeleteShow] = useState(false);
 
@@ -16,11 +15,11 @@ const User = (user) => {
 
     return(
         <>
-                <td>{user.user.username}</td>
-                <td>{user.user.user_name}</td>
-                <td>{user.user.user_surname}</td>
-                <td>{user.user.user_email}</td>
-                <td>{user.user.user_type}</td>
+                <td>{user.username}</td>
+                <td>{user.user_name}</td>
+                <td>{user.user_surname}</td>
+                <td>{user.user_email}</td>
+                <td>{user.user_type}</td>
                 <td>
                     <BsPencilSquare onClick={editHandleShow} className="updateIcon" />
                     <BsFillTrashFill onClick={deleteHandleShow} className="deleteIcon" />

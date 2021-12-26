@@ -23,7 +23,7 @@ const App = () => {
           await axios.get('http://localhost:3100/validate',{
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer '+getCookie
+              'Authorization': `Bearer ${getCookie}`
             }
           }).then((response) => {
             console.log('basarili');

@@ -1,12 +1,33 @@
+import {useState, useEffect} from 'react';
 import { Button} from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
-const AddForm = () => {
+const AddForm = ({token, setShow}) => {
+
+  const [userCreate, setUserCreate] = useState();
+  useEffect(() => {
+    if(!!userCreate){
+      (async function () {
+        await axios.post('http://localhost:3200/users', userCreate, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+          .then((response) => {
+            setShow(false);
+          }).catch((error) => {
+            console.log(error)
+          })
+      })()
+    }
+  }, [userCreate])
 
     return(
         <Formik
-            initialValues={{ username: '', user_name: '', user_surname: '', user_email: '', user_password: '',user_type:'User' }}
+            initialValues={{ username: '', user_name: '', user_surname: '', user_email: '', user_password: '',user_type:'User', pass_hash:true }}
             validationSchema={Yup.object({
               username: Yup.string()
                 .max(15, 'Must be 15 characters or less')
@@ -23,7 +44,13 @@ const AddForm = () => {
                 .min(8, 'Password is too short - should be 8 chars minimum.')
                 .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
             })}
-            
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setUserCreate(values);
+                setSubmitting(false);
+                console.log(values)
+              }, 400);
+            }}
           >
             <Form className="formElementContainer"  >
               <label>User Name</label>

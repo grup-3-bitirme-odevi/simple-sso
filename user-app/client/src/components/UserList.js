@@ -5,7 +5,7 @@ import { Col, Table, Button, Modal } from "react-bootstrap";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import axios from 'axios';
 
-const UserList = (token) => {
+const UserList = ({token}) => {
 
     const [users, setUsers] = useState();
     const [show, setShow] = useState(false);
@@ -17,7 +17,7 @@ const UserList = (token) => {
             await axios.get('http://localhost:3200/users/',{
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer '+token.token
+                    'Authorization': `Bearer ${token}`
                   }
             }).then((response) => {
                 setUsers(response.data.data);
@@ -25,7 +25,7 @@ const UserList = (token) => {
                 console.log(error);
             })
         })()
-    },[]);
+    },[show]);
 
     return(
         <>
@@ -61,7 +61,7 @@ const UserList = (token) => {
             <Modal.Title>Add New User</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <AddForm />
+                {token && <AddForm token={token} setShow={setShow}/>}
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={handleClose} variant="secondary">
