@@ -2,13 +2,19 @@ import { useState, useEffect } from 'react';
 import EditForm from './EditForm';
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
-const User = ({user}) => {
+const User = ({token, user, setIsEdit, setIsDelete}) => {
 
     const [editShow, setEditShow] = useState(false);
     const [deleteShow, setDeleteShow] = useState(false);
-
-    const editHandleClose = () => setEditShow(false);
-    const editHandleShow = () => setEditShow(true);
+  
+    const editHandleClose = () => {
+        setIsEdit(false);
+        setEditShow(false);
+    }
+    const editHandleShow = () => {
+        setIsEdit(true);
+        setEditShow(true);
+    }
 
     const deleteHandleClose = () => setDeleteShow(false);
     const deleteHandleShow = () => setDeleteShow(true);
@@ -30,7 +36,7 @@ const User = ({user}) => {
                 <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <EditForm />
+                    {user && <EditForm token={token} user={user} setIsEdit={setIsEdit} setEditShow={setEditShow}/>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={editHandleClose} variant="secondary">
@@ -45,7 +51,7 @@ const User = ({user}) => {
                 <Modal.Title>Delete User </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <p>xxx kullanıcısını silmek istiyor musunuz?</p>
+                <p><b>{user.username}</b> kullanıcısını silmek istiyor musunuz?</p>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={deleteHandleClose}>
                     Close

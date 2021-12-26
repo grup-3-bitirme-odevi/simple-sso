@@ -8,6 +8,9 @@ import axios from 'axios';
 const UserList = ({token}) => {
 
     const [users, setUsers] = useState();
+    const [isEdit, setIsEdit] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
+
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -25,7 +28,7 @@ const UserList = ({token}) => {
                 console.log(error);
             })
         })()
-    },[show]);
+    },[show, isEdit, isDelete]);
 
     return(
         <>
@@ -49,7 +52,7 @@ const UserList = ({token}) => {
                 {users &&
 					users.map((user) => (
 						<tr key={user.id}>
-							<User user={user} />
+							<User token={token} user={user} setIsEdit={setIsEdit} setIsDelete={setIsDelete} />
 						</tr>
 					))
 				}

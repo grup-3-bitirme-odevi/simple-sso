@@ -48,7 +48,6 @@ const AddForm = ({token, setShow}) => {
               setTimeout(() => {
                 setUserCreate(values);
                 setSubmitting(false);
-                console.log(values)
               }, 400);
             }}
           >
@@ -109,7 +108,7 @@ const AddForm = ({token, setShow}) => {
               <p className="errorText"><ErrorMessage name="user_type" /></p>
               
               <Button className="modalButtons"  variant="primary" type="submit" >
-                Create
+                Create User
               </Button>
             </Form>
           </Formik>

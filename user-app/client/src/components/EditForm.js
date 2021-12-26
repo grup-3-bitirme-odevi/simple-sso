@@ -1,18 +1,40 @@
+import {useState, useEffect} from 'react';
 import { Button} from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
-const EditForm = () => {
+const EditForm = ({token, user, setIsEdit, setEditShow}) => {
+  const [userUpdate, setUserUpdate] = useState('');
+  useEffect(() => {
+    if(!!userUpdate){
+      (async function () {
+        await axios.put(`http://localhost:3200/users/${user.id}`, userUpdate, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+          .then((response) => {
+            setEditShow(false);
+            setIsEdit(false);
+          }).catch((error) => {
+            console.log(error)
+          })
+      })()
+    }
+  }, [userUpdate])
 
     return(
         <>
         <Formik
-            /*initialValues={{ username:updateData.username!=='' ? updateData.username:'' ,
-             user_name:updateData.user_name!=='' ? updateData.user_name:'', 
-             user_surname: updateData.user_surname!=='' ? updateData.user_surname:'', 
-             user_email: updateData.user_email!=='' ? updateData.user_email:'', 
-             user_password: updateData.user_password!=='' ? updateData.user_password:'', 
-             user_type:updateData.user_type!=='' ? updateData.user_type:'',}}*/
+            initialValues={{ username:user.username!=='' ? user.username:'' ,
+             user_name:user.user_name!=='' ? user.user_name:'', 
+             user_surname: user.user_surname!=='' ? user.user_surname:'', 
+             user_email: user.user_email!=='' ? user.user_email:'', 
+             user_password: '', 
+             user_type:user.user_type!=='' ? user.user_type:'',
+             pass_hash:true}}
             validationSchema={Yup.object({
               username: Yup.string()
                 .max(15, 'Must be 15 characters or less')
@@ -25,11 +47,16 @@ const EditForm = () => {
                 .required('Required'),
               user_email: Yup.string().email('Invalid email address').required('Required'),
               user_password: Yup.string()
-                .required('No password provided.')
                 .min(8, 'Password is too short - should be 8 chars minimum.')
                 .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
 
             })}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setUserUpdate(values);
+                setSubmitting(false);
+              }, 400);
+            }}
           >
             <Form className="formElementContainer"  >
               <label>User Name</label>
@@ -77,7 +104,7 @@ const EditForm = () => {
               <Field
                 type="password"
                 name="user_password"
-                placeholder="Şifrenizi giriniz"
+                placeholder="Şifre değiştirmeyecekseniz boş bırakın."
                 className="modalInputs"
 
               />
@@ -91,7 +118,7 @@ const EditForm = () => {
               
 
               <Button className="modalButtons" variant="primary" type="submit" >
-                Create
+                Update User
               </Button>
             </Form>
           </Formik>
