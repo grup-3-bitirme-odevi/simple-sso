@@ -1,47 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button } from "react-bootstrap";
-import axios from "axios";
-import * as Yup from 'yup';
+import { Button} from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { Cookies } from 'react-cookie';
+import * as Yup from 'yup';
 
-const CreateModal = ({ show, setShow }) => {
+const EditForm = () => {
 
-  /* Create User Datas */
-  const [userCreate, setuserCreate] = useState("");
-  const cookies = new Cookies();
-
-  const forCreateClose = () => setShow(false);
-  useEffect(() => {
-    const getCookie = cookies.get("access_token");
-    
-    if(!!userCreate){
-      (async function () {
-        await axios.post('http://localhost:3200/', userCreate, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getCookie}`
-          }
-        })
-          .then(response => {
-            setShow(false);
-          })
-      })()
-    }
- // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userCreate])
-
-
-
-  return (
-    <>
-      <Modal size="lg" show={show} onHide={forCreateClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create User</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Formik
-            initialValues={{ username: '', user_name: '', user_surname: '', user_email: '', user_password: '',user_type:'User' }}
+    return(
+        <>
+        <Formik
+            /*initialValues={{ username:updateData.username!=='' ? updateData.username:'' ,
+             user_name:updateData.user_name!=='' ? updateData.user_name:'', 
+             user_surname: updateData.user_surname!=='' ? updateData.user_surname:'', 
+             user_email: updateData.user_email!=='' ? updateData.user_email:'', 
+             user_password: updateData.user_password!=='' ? updateData.user_password:'', 
+             user_type:updateData.user_type!=='' ? updateData.user_type:'',}}*/
             validationSchema={Yup.object({
               username: Yup.string()
                 .max(15, 'Must be 15 characters or less')
@@ -57,13 +28,8 @@ const CreateModal = ({ show, setShow }) => {
                 .required('No password provided.')
                 .min(8, 'Password is too short - should be 8 chars minimum.')
                 .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
+
             })}
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setuserCreate(values);
-                setSubmitting(false);
-              }, 400);
-            }}
           >
             <Form className="formElementContainer"  >
               <label>User Name</label>
@@ -72,8 +38,8 @@ const CreateModal = ({ show, setShow }) => {
                 name="username"
                 placeholder="Kullanıcı Adınızı giriniz"
                 className="modalInputs" />
+                <p className="errorText"><ErrorMessage name="username" /></p>
               
-              <p className="errorText"><ErrorMessage name="username" /></p>
 
 
               <label>Name</label>
@@ -82,8 +48,8 @@ const CreateModal = ({ show, setShow }) => {
                 name="user_name"
                 placeholder="İsminizi giriniz"
                 className="modalInputs" />
+                <p className="errorText"><ErrorMessage name="user_name" /></p>
               
-              <p className="errorText"><ErrorMessage name="user_name" /></p>
 
               <label>Surname</label>
               <Field
@@ -105,6 +71,7 @@ const CreateModal = ({ show, setShow }) => {
 
               />
               <p className="errorText"><ErrorMessage name="user_email" /></p>
+              
 
               <label>Password</label>
               <Field
@@ -122,15 +89,14 @@ const CreateModal = ({ show, setShow }) => {
               </Field>
               <p className="errorText"><ErrorMessage name="user_type" /></p>
               
-              <Button className="modalButtons"  variant="primary" type="submit" >
+
+              <Button className="modalButtons" variant="primary" type="submit" >
                 Create
               </Button>
             </Form>
           </Formik>
-        </Modal.Body>
-      </Modal>
-    </>
-  );
-};
+        </>
+    )
+}
 
-export default CreateModal;
+export default EditForm;

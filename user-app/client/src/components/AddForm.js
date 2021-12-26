@@ -1,52 +1,12 @@
-import React,{useState,useEffect} from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Button} from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import axios from 'axios'
 import * as Yup from 'yup';
-import { Cookies } from 'react-cookie';
 
-const UpdateModal = ({ 
-  updateshow,
-  update_id,
-  setupShow,
-  updateData,}) => {
+const AddForm = () => {
 
-
-    const [updateCreate, setupdateCreate] = useState("");
-    const cookies = new Cookies();
-
-
-  const forCreateClose = () => setupShow(false);
-  useEffect(() => {
-    const getCookie = cookies.get("access_token");
-    if(!!update_id){
-      (async function (){ 
-        await axios.put(`http://localhost:3200/users/${update_id}`,updateCreate,{
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getCookie}`,
-            
-          }}).then(()=>setupShow(false))
-       })()
-      }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[updateCreate])
-
-
-    return (
-      <>
-      <Modal size="lg" show={updateshow} onHide={forCreateClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update User {update_id}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Formik
-            initialValues={{ username:updateData.username!=='' ? updateData.username:'' ,
-             user_name:updateData.user_name!=='' ? updateData.user_name:'', 
-             user_surname: updateData.user_surname!=='' ? updateData.user_surname:'', 
-             user_email: updateData.user_email!=='' ? updateData.user_email:'', 
-             user_password: updateData.user_password!=='' ? updateData.user_password:'', 
-             user_type:updateData.user_type!=='' ? updateData.user_type:'',}}
+    return(
+        <Formik
+            initialValues={{ username: '', user_name: '', user_surname: '', user_email: '', user_password: '',user_type:'User' }}
             validationSchema={Yup.object({
               username: Yup.string()
                 .max(15, 'Must be 15 characters or less')
@@ -62,14 +22,8 @@ const UpdateModal = ({
                 .required('No password provided.')
                 .min(8, 'Password is too short - should be 8 chars minimum.')
                 .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.')
-
             })}
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setupdateCreate(values);
-                setSubmitting(false);
-              }, 400);
-            }}
+            
           >
             <Form className="formElementContainer"  >
               <label>User Name</label>
@@ -78,9 +32,8 @@ const UpdateModal = ({
                 name="username"
                 placeholder="Kullanıcı Adınızı giriniz"
                 className="modalInputs" />
-                <p className="errorText"><ErrorMessage name="username" /></p>
               
-
+              <p className="errorText"><ErrorMessage name="username" /></p>
 
               <label>Name</label>
               <Field
@@ -88,8 +41,8 @@ const UpdateModal = ({
                 name="user_name"
                 placeholder="İsminizi giriniz"
                 className="modalInputs" />
-                <p className="errorText"><ErrorMessage name="user_name" /></p>
               
+              <p className="errorText"><ErrorMessage name="user_name" /></p>
 
               <label>Surname</label>
               <Field
@@ -111,7 +64,6 @@ const UpdateModal = ({
 
               />
               <p className="errorText"><ErrorMessage name="user_email" /></p>
-              
 
               <label>Password</label>
               <Field
@@ -129,16 +81,12 @@ const UpdateModal = ({
               </Field>
               <p className="errorText"><ErrorMessage name="user_type" /></p>
               
-
-              <Button className="modalButtons" variant="primary" type="submit" >
+              <Button className="modalButtons"  variant="primary" type="submit" >
                 Create
               </Button>
             </Form>
           </Formik>
-        </Modal.Body>
-      </Modal>
-    </>
-    )
+    );
 }
 
-export default UpdateModal
+export default AddForm;
