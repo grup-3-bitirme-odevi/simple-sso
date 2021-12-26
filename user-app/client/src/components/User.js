@@ -1,23 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import EditForm from './EditForm';
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
-const User = ({token, user, setIsEdit, setIsDelete}) => {
+const User = ({user, setIsDelete, setDeleteID, setDeletedName}) => {
 
     const [editShow, setEditShow] = useState(false);
-    const [deleteShow, setDeleteShow] = useState(false);
-  
-    const editHandleClose = () => {
-        setIsEdit(false);
-        setEditShow(false);
-    }
-    const editHandleShow = () => {
-        setIsEdit(true);
-        setEditShow(true);
-    }
 
-    const deleteHandleClose = () => setDeleteShow(false);
-    const deleteHandleShow = () => setDeleteShow(true);
+    const editHandleClose = () => setEditShow(false);
+    const editHandleShow = () => setEditShow(true);
+
+    const deleteHandleShow = () => setIsDelete(true);
 
     return(
         <>
@@ -28,7 +20,11 @@ const User = ({token, user, setIsEdit, setIsDelete}) => {
                 <td>{user.user_type}</td>
                 <td>
                     <BsPencilSquare onClick={editHandleShow} className="updateIcon" />
-                    <BsFillTrashFill onClick={deleteHandleShow} className="deleteIcon" />
+                    <BsFillTrashFill onClick={()=>{
+                        deleteHandleShow();
+                        setDeleteID(user.id);
+                        setDeletedName(user.username);
+                    }} className="deleteIcon" />
                 </td>
 
             <Modal show={editShow} onHide={editHandleClose}>
@@ -36,29 +32,13 @@ const User = ({token, user, setIsEdit, setIsDelete}) => {
                 <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {user && <EditForm token={token} user={user} setIsEdit={setIsEdit} setEditShow={setEditShow}/>}
+                    <EditForm />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={editHandleClose} variant="secondary">
                         Close
                     </Button>
                 </Modal.Footer>
-            </Modal>
-
-
-            <Modal show={deleteShow} onHide={deleteHandleClose}>
-                <Modal.Header closeButton>
-                <Modal.Title>Delete User </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <p><b>{user.username}</b> kullanıcısını silmek istiyor musunuz?</p>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={deleteHandleClose}>
-                    Close
-                    </Button>
-                    <Button> Delete </Button>
-                </Modal.Footer>
-                </Modal.Body>
             </Modal>
         </>
     )
