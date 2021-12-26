@@ -3,45 +3,50 @@ import { Cookies } from 'react-cookie';
 import axios from "axios";
 import Card from './Components/Card';
 
-
 const cookies = new Cookies();
 
 function App() {
-  const [views, setViews] = useState(false);
+  const [token, setToken] = useState('');
 
-  useEffect(()=>{
-    const getCookie = cookies.get("access_token");
+  useEffect(() => {
+    const getCookie = cookies.get('access_token');
     const originURL = window.location.origin;
-    if(getCookie !== undefined && getCookie !== null && getCookie !== ""){
+    
+    if(!!getCookie){
       (async function(){
         try{
-          await axios.post('http://localhost:3100/validate',{
-            token: getCookie,
-            url: originURL
-          }).then(response => {
-            if(response.data.stat==='success'){
-              cookies.set('access_token',response.data.access_token);
+          await axios.get('http://localhost:3100/validate',{
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getCookie}`
             }
-          }).catch(error => {
+          }).then(async (response) => {
+            setToken(getCookie);
+          }).catch((error) => {
             if(error.response.data.stat==='fail'){
-              cookies.remove("access_token");
-              window.location.assign("http://localhost:3010?redirectURL="+ originURL)
-            } 
-          });
-        } catch(err){
-          console.log(err);
+              cookies.remove('access_token');
+              window.location.assign('http://localhost:3010?redirectionURL='+originURL);
+            }
+          })
+        } catch(error){
+          console.log(error);
         }
       })();
-      setViews(true);
     } else{
-      window.location.assign("http://localhost:3010?redirectURL="+ originURL)
+      window.location.assign('http://localhost:3010?redirectionURL='+originURL);
     }
   },[])
 
   return (
-    <div className="consumerContainer">
-      {views && <Card/>}
-    </div>
+    <>
+    {token && 
+      <div className="consumerContainer">
+        { <Card token={token} /> }
+      </div>
+    }
+    </>
+    
+
   );
 }
 
