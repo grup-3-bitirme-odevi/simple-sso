@@ -11,7 +11,7 @@ const Token = db.token;
 // Response: If success, (success, user_id, access_token) / else (fail)
 exports.IsAuthorized = async (req, res) => {
   // User params catching from req
-  const {redirectionURL} = req.query;
+  const {redirectURL} = req.query;
   const {username, password, pass_hash} = req.body;
   let getPassword = password;
   const reqIp = "127.0.0.1";
@@ -20,7 +20,7 @@ exports.IsAuthorized = async (req, res) => {
   try {
     let textUrl;
 
-    if(!redirectionURL){
+    if(!redirectURL){
       return res.status(409).json({
         stat: "fail",
         message: "Redirect URL is reqiured."
@@ -89,7 +89,7 @@ exports.IsAuthorized = async (req, res) => {
       textUrl = mapUrl;
     }
 
-    var regexUrl = new RegExp(redirectionURL, "g");
+    var regexUrl = new RegExp(redirectURL, "g");
     if (!textUrl.match(regexUrl)) {
       return res.status(409).json({
         stat: "fail",

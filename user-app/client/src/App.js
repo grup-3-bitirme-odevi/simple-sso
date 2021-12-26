@@ -33,7 +33,7 @@ const App = () => {
           }).catch((error) => {
             if(error.response.data.stat==='fail'){
               cookies.remove('access_token');
-              window.location.assign('http://localhost:3010?redirectionURL='+originURL);
+              window.location.assign('http://localhost:3010?redirectURL='+originURL);
             }
           })
         } catch(error){
@@ -41,7 +41,7 @@ const App = () => {
         }
       })();
     } else{
-      window.location.assign('http://localhost:3010?redirectionURL='+originURL);
+      window.location.assign('http://localhost:3010?redirectURL='+originURL);
     }
   },[])
 

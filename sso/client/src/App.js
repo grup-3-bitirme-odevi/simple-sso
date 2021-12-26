@@ -29,8 +29,8 @@ function App() {
 
     const salt="qwe123asd123zxc";
     var redURL = window.location.search;
-    redURL = redURL.replace("?redirectionURL=", '');
-    await axios.post(`http://localhost:3100?redirectionURL=${redURL}`,{
+    redURL = redURL.replace("?redirectURL=", '');
+    await axios.post(`http://localhost:3100?redirectURL=${redURL}`,{
       username:username,
       password:sha256(password+salt),
       pass_hash: false
@@ -48,10 +48,10 @@ function App() {
   useEffect(() => {
     const getCookie = cookies.get("access_token"); // test
     var redURL = window.location.search;
-    redURL = redURL.replace("?redirectionURL=", '');
+    redURL = redURL.replace("?redirectURL=", '');
     const redirectQuery = window.location.search.split("=")[0];
 
-    if(redirectQuery==="?redirectionURL"){
+    if(redirectQuery==="?redirectURL"){
       if(!!redURL){
         setRedirect(true);
       }
