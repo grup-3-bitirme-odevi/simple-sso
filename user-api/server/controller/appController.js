@@ -76,7 +76,7 @@ exports.deleteUser = async (req, res) => {
 
   const {user_id} = req.params;
 
-  const user = await User.findOne({where: {id:user_id}});
+  const user = await User.findOne({where: {id:req._user.id}});
 
   if(!user){
     return res.status(409).json({
