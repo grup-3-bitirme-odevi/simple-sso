@@ -1,7 +1,7 @@
 import React from "react";
 import { Navbar, Container, Nav, NavDropdown, Col } from "react-bootstrap";
 
-const Header = () => {
+const Header = ({userDetail}) => {
   return (
     <>
       <Col xl={12} md={12} lg={12} sm={12} xs={12}>
@@ -11,7 +11,7 @@ const Header = () => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto"></Nav>
-              <Nav>Hoşgeldiniz: <b>&nbsp;username</b></Nav>
+              <Nav>Hoşgeldiniz: <b>&nbsp;{userDetail.username}</b></Nav>
             </Navbar.Collapse>
           </Container>
         </Navbar>

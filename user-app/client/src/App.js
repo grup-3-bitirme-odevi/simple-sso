@@ -12,6 +12,8 @@ const cookies = new Cookies();
 const App = () => {
 
   const [token, setToken] = useState("");
+  const [userDetail, setUserDetail] = useState({});
+  
   
   useEffect(() => {
     const getCookie = cookies.get('access_token');
@@ -25,9 +27,9 @@ const App = () => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${getCookie}`
             }
-          }).then((response) => {
-            console.log('basarili');
-            setToken(getCookie);            
+          }).then(async (response) => {
+            setToken(getCookie);
+            getUserData(getCookie);
           }).catch((error) => {
             if(error.response.data.stat==='fail'){
               cookies.remove('access_token');
@@ -43,15 +45,30 @@ const App = () => {
     }
   },[])
 
+  const getUserData = async(getCookie) => {
+    await axios.get('http://localhost:3200/users/info',{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getCookie}`
+      }
+    })
+    .then((response) => setUserDetail(response.data.data))
+    .catch((error) => console.log(error));
+  }
+
   return (
-    <div className="App">
-    <Container>
-      <Row>
-        <Header />
-        {token && <UserList token={token} />}
-      </Row>
-    </Container>
-    </div>
+    <>
+    {userDetail && 
+      <div className="App">
+      <Container>
+        <Row>
+          <Header userDetail={userDetail} />
+          {token && <UserList token={token} />}
+        </Row>
+      </Container>
+      </div>
+    }
+    </>
   );
 };
 
