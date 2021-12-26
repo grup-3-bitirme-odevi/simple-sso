@@ -1,6 +1,8 @@
 import {useEffect, useState} from 'react';
 import { Cookies } from 'react-cookie';
 import axios from "axios";
+import Card from './Components/Card';
+
 
 const cookies = new Cookies();
 
@@ -37,8 +39,8 @@ function App() {
   },[])
 
   return (
-    <div className="App">
-      {views && "consumer page"}
+    <div className="consumerContainer">
+      {views && <Card/>}
     </div>
   );
 }
