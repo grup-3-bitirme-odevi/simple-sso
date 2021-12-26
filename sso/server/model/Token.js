@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       url: {
-        type: DataTypes.STRING(80),
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       token: {

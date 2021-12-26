@@ -176,7 +176,7 @@ exports.IsAccessTokenValid = async (req, res) => {
     // If now date bigger than token TTL
     if (date > tokenTTL) {
       //await Token.destroy({ where: { token: token } });
-      return res.status(409).json({
+      return res.status(401).json({
         stat: "fail",
         message: "You are not authorized.",
       });
