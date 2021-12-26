@@ -68,6 +68,8 @@
 .userDataTxt{
     color: #28292b;
     font-weight: 300;
+    word-break: break-word;
+    margin-left: 25px;
 }
 .consumerFooter{
     display: flex;
