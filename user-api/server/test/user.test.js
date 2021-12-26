@@ -1,4 +1,4 @@
-const { expect } = require('chai')
+
 
 const {
   sequelize,
@@ -8,7 +8,7 @@ const {
   checkPropertyExists
 } = require('sequelize-test-helpers')
 
-const UserModel = require('../../../user-api/server/model/User')
+const UserModel = require('../model/User')
 
 describe('users', () => {
 
@@ -24,6 +24,7 @@ describe('users', () => {
         const instance = new Comm()
             ;['id', 'username', 'user_name', 'user_surname', 'user_password','user_email','user_type'].forEach(
                 checkPropertyExists(instance)
+                
             )
     })
 

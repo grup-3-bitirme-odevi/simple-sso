@@ -22,3 +22,5 @@ const port = 3200;
 app.listen(port, () => {
     console.log('Server Started')
 });
+
+module.exports =app;
