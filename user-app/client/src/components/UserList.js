@@ -4,15 +4,12 @@ import AddForm from './AddForm';
 import { Col, Table, Button, Modal } from "react-bootstrap";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import axios from 'axios';
-import DeleteForm from './DeleteForm';
 
 const UserList = ({token}) => {
 
     const [users, setUsers] = useState();
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
-    const [deleteID, setDeleteID] = useState();
-    const [deletedName, setDeletedName] = useState();
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -55,7 +52,7 @@ const UserList = ({token}) => {
                 {users &&
 					users.map((user) => (
 						<tr key={user.id}>
-							<User token={token} user={user} setIsEdit={setIsEdit} setIsDelete={setIsDelete} setDeleteID={setDeleteID} setDeletedName={setDeletedName} />
+							<User token={token} user={user} setIsEdit={setIsEdit} setIsDelete={setIsDelete} />
 						</tr>
 					))
 				}
@@ -75,12 +72,7 @@ const UserList = ({token}) => {
 				</Button>
             </Modal.Footer>
         </Modal>
-                <DeleteForm 
-                isDelete={isDelete} 
-                setIsDelete={setIsDelete} 
-                deleteID={deleteID}
-                deletedName={deletedName}
-                />
+
         </Col>
         </>       
     )
