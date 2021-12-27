@@ -46,18 +46,22 @@ function App() {
   }
 
   useEffect(() => {
-    const getCookie = cookies.get("access_token"); // test
-    var redURL = window.location.search;
-    redURL = redURL.replace("?redirectURL=", '');
-    const redirectQuery = window.location.search.split("=")[0];
-
-    if(redirectQuery==="?redirectURL"){
-      if(!!redURL){
-        setRedirect(true);
+    const getCookie = cookies.get("access_token"); 
+    if(!!getCookie){
+      window.location.assign('http://localhost:3020');
+    } else{
+      var redURL = window.location.search;
+      redURL = redURL.replace("?redirectURL=", '');
+      const redirectQuery = window.location.search.split("=")[0];
+  
+      if(redirectQuery==="?redirectURL"){
+        if(!!redURL){
+          setRedirect(true);
+        }
       }
-    }
-    else{
-      setRedirect(false);
+      else{
+        setRedirect(false);
+      }
     }
   },[])
 
