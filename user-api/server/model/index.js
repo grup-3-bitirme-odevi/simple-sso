@@ -30,7 +30,6 @@ db.sequelize = sequelize;
 db.user = require("./User")(sequelize, DataTypes);
 db.url = require("./Url")(sequelize, DataTypes);
 db.token = require("./Token")(sequelize, DataTypes);
-db.log = require("./Log")(sequelize, DataTypes);
 
 db.sequelize.sync({ force: false });
 
