@@ -74,3 +74,5 @@ const logger = async (module, ip, method, url, status, res_length, res_ms) => {
     console.log(error);
   }
 };
+
+module.exports = app
