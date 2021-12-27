@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       username: {
         type: DataTypes.STRING(45),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       user_name: {
         type: DataTypes.STRING(45),
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       user_email: {
         type: DataTypes.STRING(45),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       user_type: {
         type: DataTypes.STRING(10),

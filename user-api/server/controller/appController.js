@@ -1,39 +1,67 @@
 const db = require("../model");
-const sha256 = require('js-sha256');
-const bcrypt = require('bcrypt');
+const sha256 = require("js-sha256");
+const bcrypt = require("bcrypt");
 
 const User = db.user;
 
-const handleQuery = [
-  {name:"users_username_unique", value:"Kullanıcı adı sistemde kayıtlı."},
-  {name:"users_user_email_unique", value:"Email sistemde kayıtlı."},
-]
-
 exports.createUser = async (req, res) => {
-  
-  const { username, user_name, user_surname, user_password, user_email, user_type, pass_hash } = req.body;
+  const {
+    username,
+    user_name,
+    user_surname,
+    user_password,
+    user_email,
+    user_type,
+    pass_hash,
+  } = req.body;
   let getPassword = user_password;
-  const salt="qwe123asd123zxc";
+  const salt = "qwe123asd123zxc";
 
-  if(pass_hash == null && pass_hash == undefined){
+  if (pass_hash == null && pass_hash == undefined) {
     return res.status(409).json({
       stat: "fail",
-      message: "All inputs are required."
+      message: "All inputs are required.",
     });
   }
 
-  if(!(username && user_name && user_surname && user_password && user_email && user_type)){
+  if (
+    !(
+      username &&
+      user_name &&
+      user_surname &&
+      user_password &&
+      user_email &&
+      user_type
+    )
+  ) {
     return res.status(409).json({
-      "stat":"fail",
-      "message":"All inputs are required."
+      stat: "fail",
+      message: "All inputs are required.",
     });
   }
 
-  if(pass_hash){
-    getPassword = sha256(getPassword+salt);
+  const checkUsername = await User.findOne({ where: { username: username } });
+  const checkEmail = await User.findOne({ where: { user_email: user_email } });
+
+  if (checkUsername) {
+    return res.status(409).json({
+      stat: "fail",
+      message: "Username exists in the system.",
+    });
   }
 
-  const encryptedPassword = await bcrypt.hash(getPassword,10);
+  if (checkEmail) {
+    return res.status(409).json({
+      stat: "fail",
+      message: "Email exists in the system.",
+    });
+  }
+
+  if (pass_hash) {
+    getPassword = sha256(getPassword + salt);
+  }
+
+  const encryptedPassword = await bcrypt.hash(getPassword, 10);
 
   await db.sequelize
     .query(
@@ -49,47 +77,37 @@ exports.createUser = async (req, res) => {
         },
       }
     )
-    .then(() => {
-      return res.status(201).json({ 
-        "stat": "success",
-        message: {
-          username: username,
-          user_name: user_name,
-          user_surname: user_surname,
-          user_password: encryptedPassword,
-          user_email: user_email,
-          user_type: user_type
-        }
+    .then((data) => {
+      return res.status(201).json({
+        stat: "success",
+        message: data,
       });
     })
     .catch((err) => {
-      let findPath = err.errors.find(o => o.path)
-      let obj = handleQuery.find(o => o.name === findPath.path);
-      return res.status(500).json({
-        stat: "fail" ,
-        message: obj.value
+      return res.status(409).json({
+        stat: "fail",
       });
     });
 };
 
 exports.deleteUser = async (req, res) => {
+  const { user_id } = req.params;
+  console.log(user_id);
 
-  const {user_id} = req.params;
+  const user = await User.findOne({ where: { id: user_id } });
 
-  const user = await User.findOne({where: {id:req._user.id}});
-
-  if(!user){
+  if (!user) {
     return res.status(409).json({
-      "stat": "fail",
-      "message": "User not found."
-    })
+      stat: "fail",
+      message: "User not found.",
+    });
   }
 
-  if(user_id == user.id){
+  if (user_id == req._user.id) {
     return res.status(409).json({
-      "stat": "fail",
-      "message": "You cannot delete yourself."
-    })
+      stat: "fail",
+      message: "You cannot delete yourself.",
+    });
   }
 
   await db.sequelize
@@ -99,50 +117,57 @@ exports.deleteUser = async (req, res) => {
       },
     })
     .then(() => {
-      res.status(200).json({ 
-        "stat": "success" 
+      res.status(200).json({
+        stat: "success",
+        message: "User deleted.",
       });
     })
     .catch((err) => {
-      res.status(500).json({ 
-        "stat": "fail"
+      res.status(409).json({
+        stat: "fail",
       });
     });
 };
 
 exports.updateUser = async (req, res) => {
-
-  const { username, user_name, user_surname, user_password, user_email, user_type, pass_hash } = req.body;
-  const {user_id} = req.params;
+  const {
+    username,
+    user_name,
+    user_surname,
+    user_password,
+    user_email,
+    user_type,
+    pass_hash,
+  } = req.body;
+  const { user_id } = req.params;
   let getPassword = user_password;
-  const salt="qwe123asd123zxc";
+  const salt = "qwe123asd123zxc";
 
+  const user = await User.findOne({ where: { id: user_id } });
 
-  const user = await User.findOne({where: {id:user_id}});
-
-  if(!user){
-    return res.status(409).json({
-      "stat": "fail",
-      "message": "User not found"
-    })
-  }
-
-  if(pass_hash == null && pass_hash == undefined){
+  if (!user) {
     return res.status(409).json({
       stat: "fail",
-      message: "All inputs are required."
+      message: "User not found.",
     });
   }
 
-  if(!(username && user_name && user_surname && user_email && user_type)){
+  if (pass_hash == null && pass_hash == undefined) {
     return res.status(409).json({
-      "stat":"fail",
-      "message":"All inputs are required."
+      stat: "fail",
+      message: "All inputs are required.",
     });
   }
 
-  if(pass_hash){
-    getPassword = sha256(getPassword+salt);
+  if (!(username && user_name && user_surname && user_email && user_type)) {
+    return res.status(409).json({
+      stat: "fail",
+      message: "All inputs are required.",
+    });
+  }
+
+  if (pass_hash) {
+    getPassword = sha256(getPassword + salt);
   }
 
   await db.sequelize
@@ -162,58 +187,66 @@ exports.updateUser = async (req, res) => {
     )
     .then(() => {
       res.status(201).json({
-        "stat": "success",
+        stat: "success",
         message: {
           username: username,
           user_name: user_name,
           user_surname: user_surname,
           user_email: user_email,
-          user_type: user_type
-        }
+          user_type: user_type,
+        },
       });
     })
     .catch(() => {
-      res.status(500).json({ 
-        stat: "fail"
+      res.status(409).json({
+        stat: "fail",
       });
     });
 };
 
 exports.getListOfUsers = async (req, res) => {
-  await db.sequelize.query("CALL getListOfUsers () ").then((data) => {
-    res.status(200).json({
-      "stat": "success",
-      "data": data
+  await db.sequelize
+    .query("CALL getListOfUsers () ")
+    .then((data) => {
+      res.status(200).json({
+        stat: "success",
+        data: data,
+      });
+    })
+    .catch(() => {
+      res.status(409).json({
+        stat: "fail",
+      });
     });
-  }).catch(() => {
-    res.status(500).json({ 
-      "stat": "fail"
-    });
-  })
 };
 
 exports.getUserInfo = async (req, res) => {
-  try{
-    const {id} = req._user;
-    const user = await User.findOne({where: {id:id}});
+  try {
+    const { id } = req._user;
+    const user = await User.findOne({ where: { id: id } });
+
+    if (!user) {
+      return res.status(409).json({
+        stat: "fail",
+        message: "User not found.",
+      });
+    }
 
     return res.status(200).json({
-      "stat":"success",
-      "data": {
+      stat: "success",
+      data: {
         id: user.id,
         username: user.username,
         user_name: user.user_name,
         user_surname: user.user_surname,
         user_email: user.user_email,
-        user_type: user.user_type
-      }
-    })
-  } catch(err){
+        user_type: user.user_type,
+      },
+    });
+  } catch (err) {
     return res.status(500).json({
-      "stat": "fail",
-      "message": err
-    })
+      stat: "fail",
+      message: err,
+    });
   }
-
-}
-
+};
