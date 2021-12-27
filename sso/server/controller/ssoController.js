@@ -93,7 +93,7 @@ exports.IsAuthorized = async (req, res) => {
     if (!textUrl.match(regexUrl)) {
       return res.status(409).json({
         stat: "fail",
-        message: "URL not found.",
+        message: "You are not authorized.",
       });
     }
 
