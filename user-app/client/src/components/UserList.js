@@ -30,10 +30,12 @@ const UserList = ({ token }) => {
           console.log(error);
         });
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, isEdit, isDelete]);
 
   return (
     <>
+    <Col className="usersTable mt-3" xl={8} md={8} lg={8} sm={8} xs={8}>
       <Col className="tableHead" xl={12} md={12} lg={12} sm={12} xs={12}>
         <h4>Manage Users</h4>
         <Button variant="success" onClick={handleShow}>
@@ -66,8 +68,9 @@ const UserList = ({ token }) => {
               ))}
           </tbody>
         </Table>
-
-        <Modal show={show} onHide={handleClose}>
+      </Col>
+      </Col>
+      <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Add New User</Modal.Title>
           </Modal.Header>
@@ -80,7 +83,6 @@ const UserList = ({ token }) => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </Col>
     </>
   );
 };

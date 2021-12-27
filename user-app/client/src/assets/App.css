@@ -1,3 +1,6 @@
+.pageHeader{
+    padding: 0;
+}
 .tablesContainer{
     display: flex;
     align-items: center;
@@ -63,6 +66,12 @@
 }
 .dropdown-menu{
     background: #0c1633;
+}
+.usersTable{
+    border-radius: 1rem;
+    overflow: hidden;
+    padding: 0;
+    box-shadow: 1px 9px 18px 0px;
 }
 .tableHead{
     background-color: #362F4B;

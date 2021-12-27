@@ -2,7 +2,6 @@ import "./assets/App.css";
 import UserList from './components/UserList';
 import Header from './components/Header';
 import { useState, useEffect } from "react";
-import { Container, Row } from "react-bootstrap";
 
 import axios from "axios";
 import { Cookies } from "react-cookie";
@@ -59,13 +58,9 @@ const App = () => {
   return (
     <>
     {userDetail && 
-      <div className="App">
-      <Container>
-        <Row>
+      <div className="tablesContainer">
           <Header userDetail={userDetail} />
           {token && <UserList token={token} />}
-        </Row>
-      </Container>
       </div>
     }
     </>

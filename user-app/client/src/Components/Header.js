@@ -1,10 +1,10 @@
 import React from "react";
-import { Navbar, Container, Nav, NavDropdown, Col } from "react-bootstrap";
+import { Navbar, Container, Nav, Col } from "react-bootstrap";
 
 const Header = ({userDetail}) => {
   return (
     <>
-      <Col xl={12} md={12} lg={12} sm={12} xs={12}>
+      <Col className="pageHeader" xl={12} md={12} lg={12} sm={12} xs={12}>
         <Navbar className="mb-4 headerNavbar" expand="lg">
           <Container>
           <Navbar.Brand href="#home">LOGO</Navbar.Brand>

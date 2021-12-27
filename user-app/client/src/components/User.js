@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import EditForm from "./EditForm";
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
