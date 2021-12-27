@@ -4,7 +4,9 @@ import AddForm from "./AddForm";
 import { Col, Table, Button, Modal } from "react-bootstrap";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import axios from "axios";
+import { Cookies } from "react-cookie";
 
+const cookie = new Cookies();
 const UserList = ({ token, userDetail }) => {
   const [users, setUsers] = useState();
   const [isEdit, setIsEdit] = useState(false);
@@ -13,6 +15,10 @@ const UserList = ({ token, userDetail }) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleLogOut = () => {
+    cookie.remove("access_token");
+    window.location.reload(false);
+  };
 
   useEffect(() => {
     (async function () {
@@ -35,55 +41,60 @@ const UserList = ({ token, userDetail }) => {
 
   return (
     <>
-    <Col className="usersTable mt-3" xl={8} md={8} lg={8} sm={8} xs={8}>
-      <Col className="tableHead" xl={12} md={12} lg={12} sm={12} xs={12}>
-        <h4>Manage Users</h4>
-        <Button variant="success" onClick={handleShow}>
-          <BsFillPlusCircleFill /> Add New User
-        </Button>
-      </Col>
-      <Col className="tableBody" xl={12} md={12} lg={12} sm={12} xs={12}>
-        <Table striped hover>
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Name</th>
-              <th>Surname</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users &&
-              users.map((user) => (
-                <tr key={user.id}>
-                  <User
-                    token={token}
-                    user={user}
-                    setIsEdit={setIsEdit}
-                    setIsDelete={setIsDelete}
-                    userDetail={userDetail}
-                  />
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-      </Col>
+      <Col className="usersTable mt-3" xl={8} md={8} lg={8} sm={8} xs={8}>
+        <Col className="tableHead" xl={12} md={12} lg={12} sm={12} xs={12}>
+          <h4>Manage Users</h4>
+          <div>
+            <Button variant="danger btnLogOut" onClick={handleLogOut}>
+              Log Out
+            </Button>
+            <Button variant="success" onClick={handleShow}>
+              <BsFillPlusCircleFill /> Add New User
+            </Button>
+          </div>
+        </Col>
+        <Col className="tableBody" xl={12} md={12} lg={12} sm={12} xs={12}>
+          <Table striped hover>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users &&
+                users.map((user) => (
+                  <tr key={user.id}>
+                    <User
+                      token={token}
+                      user={user}
+                      setIsEdit={setIsEdit}
+                      setIsDelete={setIsDelete}
+                      userDetail={userDetail}
+                    />
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </Col>
       </Col>
       <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add New User</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {token && <AddForm token={token} setShow={setShow} />}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={handleClose} variant="secondary">
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <Modal.Header closeButton>
+          <Modal.Title>Add New User</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {token && <AddForm token={token} setShow={setShow} />}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleClose} variant="secondary">
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

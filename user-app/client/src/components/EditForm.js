@@ -25,6 +25,7 @@ const EditForm = ({ token, user, setIsEdit, setEditShow }) => {
           });
       })();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userUpdate]);
 
   return (
