@@ -3,8 +3,9 @@ import EditForm from "./EditForm";
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
+import ControlTxt from "./ControlTxt";
 
-const User = ({ token, user, setIsEdit, setIsDelete }) => {
+const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
   const [editShow, setEditShow] = useState(false);
   const [deleteShow, setDeleteShow] = useState(false);
 
@@ -46,7 +47,7 @@ const User = ({ token, user, setIsEdit, setIsDelete }) => {
 
   return (
     <>
-      <td>{user.username}</td>
+      <td>{user.username === userDetail.username ? <ControlTxt user={user}/>: user.username}</td>
       <td>{user.user_name}</td>
       <td>{user.user_surname}</td>
       <td>{user.user_email}</td>

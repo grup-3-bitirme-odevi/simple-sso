@@ -60,7 +60,7 @@ const App = () => {
     {userDetail && 
       <div className="tablesContainer">
           <Header userDetail={userDetail} />
-          {token && <UserList token={token} />}
+          {token && <UserList token={token} userDetail={userDetail} />}
       </div>
     }
     </>

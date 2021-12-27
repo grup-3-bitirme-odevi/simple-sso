@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Col } from "react-bootstrap";
 import defaultPP from "../assets/pics/defaultPP.jpg"
 import axios from "axios";
+import ButtonURL from './ButtonURL';
 
 const Card = ({token}) => {
   const [userDetail, setUserDetail] = useState({});
@@ -37,6 +38,7 @@ const Card = ({token}) => {
                 <h6 >Email <span className="userDataTxt">{userDetail.user_email}</span></h6>
             </Col>
         </Col>
+        {userDetail.user_type === "admin" ? <ButtonURL/> : ""}
         <Col className="consumerFooter" xl={12} md={12} lg={12} sm={12} xs={12} >Created By KOOA</Col>
       </Col>
     </>

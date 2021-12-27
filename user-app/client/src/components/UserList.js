@@ -5,7 +5,7 @@ import { Col, Table, Button, Modal } from "react-bootstrap";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import axios from "axios";
 
-const UserList = ({ token }) => {
+const UserList = ({ token, userDetail }) => {
   const [users, setUsers] = useState();
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
@@ -63,6 +63,7 @@ const UserList = ({ token }) => {
                     user={user}
                     setIsEdit={setIsEdit}
                     setIsDelete={setIsDelete}
+                    userDetail={userDetail}
                   />
                 </tr>
               ))}
