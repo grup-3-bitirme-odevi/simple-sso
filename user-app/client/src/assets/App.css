@@ -119,3 +119,10 @@
 .page-item a:hover{
     background-color: lightgray;
 }
+.btnRefresh{
+    color: white;
+    margin-right: .6rem;
+}
+.btnRefresh svg{
+    font-size: 20px;
+}
