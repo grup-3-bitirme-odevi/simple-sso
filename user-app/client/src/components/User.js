@@ -2,9 +2,8 @@ import { useState } from "react";
 import EditForm from "./EditForm";
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
-import axios from "axios";
 import ControlTxt from "./ControlTxt";
-import { toast } from "react-toastify";
+import DeleteForm from "./DeleteForm";
 
 const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
   const [editShow, setEditShow] = useState(false);
@@ -19,32 +18,9 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
     setEditShow(true);
   };
 
-  const deleteHandleClose = () => {
-    setIsDelete(false);
-    setDeleteShow(false);
-  };
-
   const deleteHandleShow = () => {
     setIsDelete(true);
     setDeleteShow(true);
-  };
-
-  const deleteUser = async () => {
-    await axios
-      .delete(`http://localhost:3200/users/${user.id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setDeleteShow(false);
-        setIsDelete(false);
-        toast.success("Silme işlemi başarılı...");
-      })
-      .catch((error) => {
-        toast.error("İşlem başarısız...");
-      });
   };
 
   return (
@@ -84,23 +60,13 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <Modal show={deleteShow} onHide={deleteHandleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete User </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            <b>{user.username}</b> kullanıcısını silmek istiyor musunuz?
-          </p>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={deleteHandleClose}>
-              Close
-            </Button>
-            <Button onClick={deleteUser}> Delete </Button>
-          </Modal.Footer>
-        </Modal.Body>
-      </Modal>
+      <DeleteForm
+        deleteShow={deleteShow}
+        setIsDelete={setIsDelete}
+        setDeleteShow={setDeleteShow}
+        token={token}
+        user={user}
+      />
     </>
   );
 };
