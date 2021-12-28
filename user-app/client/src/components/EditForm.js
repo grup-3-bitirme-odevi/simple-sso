@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const EditForm = ({ token, user, setIsEdit, setEditShow }) => {
   const [userUpdate, setUserUpdate] = useState("");
@@ -19,9 +20,10 @@ const EditForm = ({ token, user, setIsEdit, setEditShow }) => {
           .then((response) => {
             setEditShow(false);
             setIsEdit(false);
+            toast.success("Kullanıcı Bilgileri Güncellendi...");
           })
           .catch((error) => {
-            console.log(error);
+            toast.error("Güncelleme Başarısız...");
           });
       })();
     }

@@ -5,6 +5,7 @@ import { Col, Table, Button, Modal } from "react-bootstrap";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import axios from "axios";
 import { Cookies } from "react-cookie";
+import { ToastContainer } from "react-toastify";
 
 const cookie = new Cookies();
 const UserList = ({ token, userDetail }) => {
@@ -41,7 +42,7 @@ const UserList = ({ token, userDetail }) => {
 
   return (
     <>
-      <Col className="usersTable mt-3" xl={8} md={8} lg={8} sm={8} xs={8}>
+      <Col className="usersTable mt-3" xl={8} lg={10} md={12} sm={12} xs={12}>
         <Col className="tableHead" xl={12} md={12} lg={12} sm={12} xs={12}>
           <h4>Manage Users</h4>
           <div>
@@ -81,6 +82,9 @@ const UserList = ({ token, userDetail }) => {
             </tbody>
           </Table>
         </Col>
+        <>
+          <ToastContainer />
+        </>
       </Col>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

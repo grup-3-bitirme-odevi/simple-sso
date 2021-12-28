@@ -4,6 +4,7 @@ import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import ControlTxt from "./ControlTxt";
+import { toast } from "react-toastify";
 
 const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
   const [editShow, setEditShow] = useState(false);
@@ -39,15 +40,22 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
       .then((response) => {
         setDeleteShow(false);
         setIsDelete(false);
+        toast.success("Silme işlemi başarılı...");
       })
       .catch((error) => {
-        console.log(error);
+        toast.error("İşlem başarısız...");
       });
   };
 
   return (
     <>
-      <td>{user.username === userDetail.username ? <ControlTxt user={user}/>: user.username}</td>
+      <td>
+        {user.username === userDetail.username ? (
+          <ControlTxt user={user} />
+        ) : (
+          user.username
+        )}
+      </td>
       <td>{user.user_name}</td>
       <td>{user.user_surname}</td>
       <td>{user.user_email}</td>
@@ -56,7 +64,6 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
         <BsPencilSquare onClick={editHandleShow} className="updateIcon" />
         <BsFillTrashFill onClick={deleteHandleShow} className="deleteIcon" />
       </td>
-
       <Modal show={editShow} onHide={editHandleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit User</Modal.Title>
