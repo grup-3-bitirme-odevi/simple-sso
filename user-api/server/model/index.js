@@ -30,18 +30,18 @@ db.url = require("./Url")(sequelize, DataTypes);
 db.token = require("./Token")(sequelize, DataTypes);
 db.log = require("./Log")(sequelize, DataTypes);
 
-db.sequelize.sync({ 
-  force: false 
-}).then(() => {
-  console.log(`Database & tables created!`);
-});
+db.sequelize
+  .sync({
+    force: false,
+  })
+  .then(() => {
+    console.log(`Database & tables created!`);
+    db.sequelize.query("DROP PROCEDURE IF EXISTS createUser;");
+    db.sequelize.query("DROP PROCEDURE IF EXISTS updateUser;");
+    db.sequelize.query("DROP PROCEDURE IF EXISTS deleteUser;");
+    db.sequelize.query("DROP PROCEDURE IF EXISTS getListOfUsers;");
 
-db.sequelize.query("DROP PROCEDURE IF EXISTS createUser;");
-db.sequelize.query("DROP PROCEDURE IF EXISTS updateUser;");
-db.sequelize.query("DROP PROCEDURE IF EXISTS deleteUser;");
-db.sequelize.query("DROP PROCEDURE IF EXISTS getListOfUsers;");
-
-db.sequelize.query(`
+    db.sequelize.query(`
 CREATE PROCEDURE createUser(
   IN _username VARCHAR(45),
   IN _user_name VARCHAR(45),
@@ -58,7 +58,7 @@ CREATE PROCEDURE createUser(
   END
 `);
 
-db.sequelize.query(`
+    db.sequelize.query(`
 CREATE PROCEDURE updateUser(
   IN _user_id INT,
   IN _username VARCHAR(45),
@@ -82,7 +82,7 @@ CREATE PROCEDURE updateUser(
   END
 `);
 
-db.sequelize.query(`
+    db.sequelize.query(`
 CREATE PROCEDURE deleteUser(
   IN _user_id INT
   )
@@ -91,11 +91,12 @@ CREATE PROCEDURE deleteUser(
   END
 `);
 
-db.sequelize.query(`
+    db.sequelize.query(`
 CREATE PROCEDURE getListOfUsers()
   BEGIN
   SELECT * FROM users;
   END
 `);
+  });
 
 module.exports = db;
