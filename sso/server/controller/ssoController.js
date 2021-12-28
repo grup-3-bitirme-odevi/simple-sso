@@ -15,7 +15,6 @@ exports.IsAuthorized = async (req, res) => {
   const {username, password, pass_hash} = req.body;
   let getPassword = password;
   const reqIp = "127.0.0.1";
-  const salt="qwe123asd123zxc";
 
   try {
     let textUrl;
@@ -43,7 +42,7 @@ exports.IsAuthorized = async (req, res) => {
     }
 
     if(pass_hash){
-      getPassword = sha256(getPassword+salt);
+      getPassword = sha256(getPassword+process.env.ENV_PASS_SALT);
     }
     
     // If there is user params, check user info

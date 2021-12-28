@@ -17,7 +17,7 @@ const Card = ({ token }) => {
   useEffect(() => {
     (async function () {
       await axios
-        .get("http://localhost:3200/users/info", {
+        .get(`${process.env.REACT_APP_UMM_SERVER}/users/info`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

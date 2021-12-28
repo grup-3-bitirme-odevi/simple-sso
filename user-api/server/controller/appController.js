@@ -15,7 +15,6 @@ exports.createUser = async (req, res) => {
     pass_hash,
   } = req.body;
   let getPassword = user_password;
-  const salt = "qwe123asd123zxc";
 
   if (pass_hash == null && pass_hash == undefined) {
     return res.status(409).json({
@@ -58,7 +57,7 @@ exports.createUser = async (req, res) => {
   }
 
   if (pass_hash) {
-    getPassword = sha256(getPassword + salt);
+    getPassword = sha256(getPassword + process.env.ENV_PASS_SALT);
   }
 
   const encryptedPassword = await bcrypt.hash(getPassword, 10);
@@ -141,7 +140,6 @@ exports.updateUser = async (req, res) => {
   } = req.body;
   const { user_id } = req.params;
   let getPassword = user_password;
-  const salt = "qwe123asd123zxc";
 
   const user = await User.findOne({ where: { id: user_id } });
 
@@ -167,7 +165,7 @@ exports.updateUser = async (req, res) => {
   }
 
   if (pass_hash) {
-    getPassword = sha256(getPassword + salt);
+    getPassword = sha256(getPassword + process.env.ENV_PASS_SALT);
   }
 
   await db.sequelize

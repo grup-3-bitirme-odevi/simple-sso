@@ -24,7 +24,7 @@ const UserList = ({ token, userDetail }) => {
   useEffect(() => {
     (async function () {
       await axios
-        .get("http://localhost:3200/users/", {
+        .get(`${process.env.REACT_APP_UMM_SERVER}/users/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

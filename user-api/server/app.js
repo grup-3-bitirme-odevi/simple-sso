@@ -1,3 +1,4 @@
+require('dotenv').config()
 const db = require("./model");
 const express = require("express");
 const cors = require("cors");
@@ -27,9 +28,6 @@ class StreamHook extends Writable {
   }
 }
 
-// DB Connection
-require("./config/databaseConfig");
-
 // Route Path
 const appRoute = require("./route/appRoute");
 
@@ -54,8 +52,8 @@ app.use(
 app.use("/", appRoute);
 
 // App Start
-const port = 3200;
-app.listen(port, () => {
+const PORT = process.env.ENV_APP_PORT || 3200;
+app.listen(PORT, () => {
   console.log("Server Started");
 });
 

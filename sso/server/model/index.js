@@ -1,24 +1,24 @@
-const config = require("../config/databaseConfig");
+require('dotenv').config()
 const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-  host: config.HOST,
-  dialect: config.dialect,
+const sequelize = new Sequelize(process.env.ENV_DB_NAME, process.env.ENV_DB_USER, process.env.ENV_DB_PASS, {
+  host: process.env.ENV_DB_HOST,
+  dialect: process.env.ENV_DB_DIALECT,
   logging: false,
   pool: {
-    max: config.pool.max,
-    min: config.pool.min,
-    acquire: config.pool.acquire,
-    idle: config.pool.idle,
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
   },
 });
 
 sequelize
   .authenticate()
   .then(() => {
-    console.log("connect");
+    console.log("DB Connection Success");
   })
   .catch(() => {
-    console.log("Error");
+    console.log("DB Connection Fail");
   });
 
 const db = {};

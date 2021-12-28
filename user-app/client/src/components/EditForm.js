@@ -11,7 +11,7 @@ const EditForm = ({ token, user, setIsEdit, setEditShow }) => {
     if (!!userUpdate) {
       (async function () {
         await axios
-          .put(`http://localhost:3200/users/${user.id}`, userUpdate, {
+          .put(`${process.env.REACT_APP_UMM_SERVER}/users/${user.id}`, userUpdate, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,

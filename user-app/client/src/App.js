@@ -21,7 +21,7 @@ const App = () => {
       (async function () {
         try {
           await axios
-            .get("http://localhost:3100/validate", {
+            .get(`${process.env.REACT_APP_SSO_SERVER}/validate`, {
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${getCookie}`,
@@ -35,9 +35,7 @@ const App = () => {
             .catch((error) => {
               if (error.response.data.stat === "fail") {
                 cookies.remove("access_token");
-                window.location.assign(
-                  "http://localhost:3010?redirectURL=" + originURL
-                );
+                window.location.assign(`${process.env.REACT_APP_SSO_CLIENT}?redirectURL=${originURL}`);
               }
             });
         } catch (error) {
@@ -45,13 +43,14 @@ const App = () => {
         }
       })();
     } else {
-      window.location.assign("http://localhost:3010?redirectURL=" + originURL);
+      window.location.assign(`${process.env.REACT_APP_SSO_CLIENT}?redirectURL=${originURL}`);
     }
   }, []);
 
   const getUserData = async (getCookie) => {
+    const originURL = window.location.origin;
     await axios
-      .get("http://localhost:3200/users/info", {
+      .get(`${process.env.REACT_APP_UMM_SERVER}/users/info`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie}`,
@@ -60,7 +59,7 @@ const App = () => {
       .then((response) => {
         if (response.data.data.user_type !== "admin") {
           setAllow(false);
-          window.location.assign("http://localhost:3020");
+          window.location.assign(`${process.env.REACT_APP_SSO_CLIENT}?redirectURL=${originURL}`);
         } else {
           setAllow(true);
           setUserDetail(response.data.data);

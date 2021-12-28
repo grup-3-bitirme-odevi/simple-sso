@@ -12,7 +12,7 @@ const AddForm = ({ token, setShow }) => {
     if (!!userCreate) {
       (async function () {
         await axios
-          .post("http://localhost:3200/users", userCreate, {
+          .post(`${process.env.REACT_APP_UMM_SERVER}/users`, userCreate, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,

@@ -1,3 +1,4 @@
+require('dotenv').config()
 const db = require("./model");
 const express = require("express");
 const cors = require("cors");
@@ -7,7 +8,7 @@ const Log = db.log;
 
 class StreamHook extends Writable {
   write(line) {
-    let logModule = "SSO-AUTH";
+    let logModule = process.env.ENV_MODULE_NAME;
     let logIp = line.split("|")[0];
     let logMethod = line.split("|")[1];
     let logUrl = line.split("|")[2];
@@ -26,9 +27,6 @@ class StreamHook extends Writable {
     );
   }
 }
-
-// DB Connection
-require("./config/databaseConfig");
 
 // Route Path
 const ssoRoute = require("./route/ssoRoute");
@@ -54,8 +52,8 @@ app.use(
 app.use("/", ssoRoute);
 
 // App Start
-const port = 3100;
-app.listen(port, () => {
+const PORT = process.env.ENV_APP_PORT || 3100;
+app.listen(PORT, () => {
   console.log("Server Started");
 });
 

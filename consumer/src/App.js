@@ -7,6 +7,7 @@ const cookies = new Cookies();
 
 function App() {
   const [token, setToken] = useState('');
+  const [allow, setAllow] = useState(false);
 
   useEffect(() => {
     const getCookie = cookies.get('access_token');
@@ -15,17 +16,19 @@ function App() {
     if(!!getCookie){
       (async function(){
         try{
-          await axios.get('http://localhost:3100/validate',{
+          await axios.get(`${process.env.REACT_APP_SSO_SERVER}/validate`,{
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${getCookie}`
             }
-          }).then(async (response) => {
+          }).then(() => {
             setToken(getCookie);
+            setAllow(true);
           }).catch((error) => {
             if(error.response.data.stat==='fail'){
+              setAllow(false);
               cookies.remove('access_token');
-              window.location.assign('http://localhost:3010?redirectURL='+originURL);
+              window.location.assign(`${process.env.REACT_APP_SSO_CLIENT}?redirectURL=${originURL}`);
             }
           })
         } catch(error){
@@ -33,15 +36,16 @@ function App() {
         }
       })();
     } else{
-      window.location.assign('http://localhost:3010?redirectURL='+originURL);
+      setAllow(false);
+      window.location.assign(`${process.env.REACT_APP_SSO_CLIENT}?redirectURL=${originURL}`);
     }
   },[])
 
   return (
     <>
-    {token && 
+    {allow && 
       <div className="consumerContainer">
-        { <Card token={token} /> }
+        {token && <Card token={token} />}
       </div>
     }
     </>

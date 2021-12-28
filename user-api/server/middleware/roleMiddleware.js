@@ -6,7 +6,7 @@ module.exports = (roles) => {
     } else {
       return res.status(401).json({
         stat: "fail",
-        message: "you are not authorized",
+        message: "You are not authorized.",
       });
     }
   };

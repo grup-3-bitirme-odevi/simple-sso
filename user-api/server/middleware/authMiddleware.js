@@ -1,3 +1,4 @@
+require('dotenv').config()
 const axios = require("axios");
 const db = require("../model");
 const User = db.user;
@@ -23,7 +24,7 @@ module.exports = async (req, res, next) => {
   }
 
   await axios
-    .get("http://localhost:3100/validate", {
+    .get(`${process.env.ENV_SSO_SERVER}/validate`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,

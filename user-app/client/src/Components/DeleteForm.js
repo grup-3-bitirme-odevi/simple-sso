@@ -16,7 +16,7 @@ const DeleteForm = ({user, token, deleteShow, setIsDelete, setDeleteShow}) => {
 
     const deleteUser = async () => {
         await axios
-          .delete(`http://localhost:3200/users/${user.id}`, {
+          .delete(`${process.env.REACT_APP_UMM_SERVER}/users/${user.id}`, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
