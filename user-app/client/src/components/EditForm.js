@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const EditForm = ({ token, user, setIsEdit, setEditShow }) => {
+const EditForm = ({ token, user, setIsEdit, setEditShow, cookie }) => {
   const [userUpdate, setUserUpdate] = useState("");
   useEffect(() => {
     if (!!userUpdate) {
@@ -23,6 +23,10 @@ const EditForm = ({ token, user, setIsEdit, setEditShow }) => {
             toast.success("Kullanıcı Bilgileri Güncellendi...");
           })
           .catch((error) => {
+            if(error.response.status === 401){
+              cookie.remove("access_token");
+              window.location.reload(false);
+            }
             toast.error("Güncelleme Başarısız...");
           });
       })();

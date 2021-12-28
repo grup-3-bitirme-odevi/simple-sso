@@ -41,6 +41,10 @@ const UserList = ({ token, userDetail }) => {
           setIsLoading(false);
         })
         .catch((error) => {
+          if (error.response.status === 401) {
+            cookie.remove("access_token");
+            window.location.reload(false);
+          }
           console.log(error);
         });
     })();
@@ -52,6 +56,9 @@ const UserList = ({ token, userDetail }) => {
   useEffect(() => {
     if (!isLoading) {
       setCurrentUsers(users.slice(indexOfFirstPost, indexOfLastPost));
+    }
+    if (currentUsers.length - 1 === 0) {
+      setCurrentPage(currentPage - 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, currentPage, show, users]);
@@ -96,6 +103,7 @@ const UserList = ({ token, userDetail }) => {
                     setIsEdit={setIsEdit}
                     setIsDelete={setIsDelete}
                     userDetail={userDetail}
+                    cookie={cookie}
                   />
                 </tr>
               ))}
@@ -116,7 +124,7 @@ const UserList = ({ token, userDetail }) => {
           <Modal.Title>Add New User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {token && <AddForm token={token} setShow={setShow} />}
+          {token && <AddForm token={token} setShow={setShow} cookie={cookie} />}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={handleClose} variant="secondary">

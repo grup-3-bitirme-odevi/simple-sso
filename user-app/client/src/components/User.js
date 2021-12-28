@@ -5,7 +5,7 @@ import { Modal, Button } from "react-bootstrap";
 import ControlTxt from "./ControlTxt";
 import DeleteForm from "./DeleteForm";
 
-const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
+const User = ({ token, user, setIsEdit, setIsDelete, userDetail, cookie }) => {
   const [editShow, setEditShow] = useState(false);
   const [deleteShow, setDeleteShow] = useState(false);
 
@@ -51,6 +51,7 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
               user={user}
               setIsEdit={setIsEdit}
               setEditShow={setEditShow}
+              cookie={cookie}
             />
           )}
         </Modal.Body>
@@ -66,6 +67,7 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail }) => {
         setDeleteShow={setDeleteShow}
         token={token}
         user={user}
+        cookie={cookie}
       />
     </>
   );

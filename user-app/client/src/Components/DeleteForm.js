@@ -9,6 +9,7 @@ const DeleteForm = ({
   deleteShow,
   setIsDelete,
   setDeleteShow,
+  cookie
 }) => {
   const deleteHandleClose = () => {
     setIsDelete(false);
@@ -29,6 +30,10 @@ const DeleteForm = ({
         toast.success("Silme işlemi başarılı...");
       })
       .catch((error) => {
+        if(error.response.status === 401){
+          cookie.remove("access_token");
+          window.location.reload(false);
+        }
         toast.error("İşlem başarısız...");
       });
   };

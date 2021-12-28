@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const AddForm = ({ token, setShow }) => {
+const AddForm = ({ token, setShow, cookie }) => {
   const [userCreate, setUserCreate] = useState();
 
   useEffect(() => {
@@ -25,6 +25,10 @@ const AddForm = ({ token, setShow }) => {
             }
           })
           .catch((error) => {
+            if(error.response.status === 401){
+              cookie.remove("access_token");
+              window.location.reload(false);
+            }
             toast.error("Kullanıcı Oluşturulamadı.");
           });
       })();
