@@ -16,7 +16,7 @@ describe('users', () => {
     })
 
     // Check table properties
-    describe('models/Communications - Properties Check', () => {
+    describe('models/Log - Properties Check', () => {
         const Comm = LogModel(sequelize, dataTypes)
         const instance = new Comm()
             ;['id', 'module', 'ip', 'method', 'url', 'status', 'res_length', 'res_ms'].forEach(

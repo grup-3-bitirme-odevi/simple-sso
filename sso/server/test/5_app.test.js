@@ -4,20 +4,10 @@ const expect = chai.expect
 chai.use(chaiHttp);
 const server = require("../app")
 
-describe("SSO contoller", async () => {
-    // before(function( done ) {
-    //     server.listen(3100, function(err) {
-    //         done(err);
-    //     })
-    // });
-    
-    // afterAll(function( done ) {
-    //     server.close(function(err) {
-    //         done(err);
-    //     });
-    // });
-    
-    it("Post isAuthorized", done => {
+describe("SSO contoller", async done => {
+
+    it("Post isAuthorized",done => {
+        
         chai.request(server).post("?redirectURL=http://localhost:3020")
             .send({
                 username: "admin",
@@ -35,8 +25,9 @@ describe("SSO contoller", async () => {
                 expect(res.body.stat).to.be.equal('success')
                 expect(res.body.message).to.be.equal('login success')
                 expect(res.body.access_token).to.be.equal(token)
-
+                
                 done()
+
             });
     });
     it("Get isAccessTokenValid", done => {
@@ -55,6 +46,7 @@ describe("SSO contoller", async () => {
 describe("SSO negative contoller", async () => {
 
 it("When using wrong url ", done => {
+    
     chai.request(server).post("?redirectURL=")
         .send({
             username: "admin",
@@ -155,19 +147,7 @@ it("When regex does not match", done => {
 
             done()
         });
-});
-it("When wrong bearer", done => {
-    chai.request(server).get("/validate")
-    .set("Authorization" + token)
-        .end(function (err, res) {
-            console.log(res.body.message)
-            console.log(res.status)
-            expect(res.status).to.be.equal(409);
-            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
-            expect(res.body.stat).to.be.equal('fail')
-            done()
-        });
-});
+});;
 
 it("When token does not match", done => {
     chai.request(server).get("/validate")
