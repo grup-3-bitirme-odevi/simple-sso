@@ -1,3 +1,4 @@
+require('dotenv').config()
 const db = require("../model");
 const { v4: uuidv4 } = require("uuid");
 const sha256 = require('js-sha256');
@@ -99,7 +100,7 @@ exports.IsAuthorized = async (req, res) => {
     // If password correct; generate token guid and TTL
     const access_token = uuidv4();
     const date = new Date(Date.now());
-    date.setMinutes(date.getMinutes() + 5);
+    date.setMinutes(date.getMinutes() + process.env.ENV_TOKEN_TTL);
 
     // Create user token
     await Token.create({
@@ -181,7 +182,7 @@ exports.IsAccessTokenValid = async (req, res) => {
       });
     } else {
       const date = new Date(Date.now());
-      date.setMinutes(date.getMinutes() + 30);
+      date.setMinutes(date.getMinutes() + process.env.ENV_TOKEN_TTL);
 
       // Create new token
       await Token.update(
