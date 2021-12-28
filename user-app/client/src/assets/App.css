@@ -103,3 +103,19 @@
 .btnLogOut{
     margin-right: .6rem;
 }
+.page-item{
+    border: 2px solid #D9D7D8;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+.page-item a{
+    text-decoration: none;
+    padding: 3px 11px;
+    font-size: 20px;
+    color: cornflowerblue;
+    user-select: none;
+    transition: .3s;
+}
+.page-item a:hover{
+    background-color: lightgray;
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect, useEffect } from "react";
 import User from "./User";
 import AddForm from "./AddForm";
 import { Col, Table, Button, Modal } from "react-bootstrap";
@@ -6,12 +6,18 @@ import { BsFillPlusCircleFill } from "react-icons/bs";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import { ToastContainer } from "react-toastify";
+import Pagination from "./Pagination";
 
 const cookie = new Cookies();
 const UserList = ({ token, userDetail }) => {
   const [users, setUsers] = useState();
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentUsers, setCurrentUsers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  //bir sayfada kaç adet veri gözükeceğini belirlediğimiz state
+  const [userPerPage] = useState(5);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -21,7 +27,7 @@ const UserList = ({ token, userDetail }) => {
     window.location.reload(false);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     (async function () {
       await axios
         .get(`${process.env.REACT_APP_UMM_SERVER}/users/`, {
@@ -32,6 +38,7 @@ const UserList = ({ token, userDetail }) => {
         })
         .then((response) => {
           setUsers(response.data.data);
+          setIsLoading(false);
         })
         .catch((error) => {
           console.log(error);
@@ -39,6 +46,20 @@ const UserList = ({ token, userDetail }) => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, isEdit, isDelete]);
+
+  const indexOfLastPost = currentPage * userPerPage;
+  const indexOfFirstPost = indexOfLastPost - userPerPage;
+  useEffect(() => {
+    if (!isLoading) {
+      setCurrentUsers(users.slice(indexOfFirstPost, indexOfLastPost));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, currentPage]);
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -67,18 +88,17 @@ const UserList = ({ token, userDetail }) => {
               </tr>
             </thead>
             <tbody>
-              {users &&
-                users.map((user) => (
-                  <tr key={user.id}>
-                    <User
-                      token={token}
-                      user={user}
-                      setIsEdit={setIsEdit}
-                      setIsDelete={setIsDelete}
-                      userDetail={userDetail}
-                    />
-                  </tr>
-                ))}
+              {currentUsers.map((user) => (
+                <tr key={user.id}>
+                  <User
+                    token={token}
+                    user={user}
+                    setIsEdit={setIsEdit}
+                    setIsDelete={setIsDelete}
+                    userDetail={userDetail}
+                  />
+                </tr>
+              ))}
             </tbody>
           </Table>
         </Col>
@@ -86,6 +106,11 @@ const UserList = ({ token, userDetail }) => {
           <ToastContainer />
         </>
       </Col>
+      <Pagination
+        totalUsers={users.length}
+        userPerPage={userPerPage}
+        paginate={paginate}
+      />
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Add New User</Modal.Title>
