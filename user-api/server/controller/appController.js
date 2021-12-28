@@ -67,12 +67,12 @@ exports.createUser = async (req, res) => {
       "CALL createUser (:username, :user_name, :user_surname, :user_password, :user_email, :user_type)",
       {
         replacements: {
-          username: username,
-          user_name: user_name,
-          user_surname: user_surname,
+          username: username.toLowerCase(),
+          user_name: user_name.toLowerCase(),
+          user_surname: user_surname.toLowerCase(),
           user_password: encryptedPassword,
-          user_email: user_email,
-          user_type: user_type,
+          user_email: user_email.toLowerCase(),
+          user_type: user_type.toLowerCase(),
         },
       }
     )
@@ -168,18 +168,20 @@ exports.updateUser = async (req, res) => {
     getPassword = sha256(getPassword + process.env.ENV_PASS_SALT);
   }
 
+  const encryptedPassword = await bcrypt.hash(getPassword, 10);
+
   await db.sequelize
     .query(
       "CALL updateUser (:user_id, :username, :user_name, :user_surname, :user_password, :user_email, :user_type)",
       {
         replacements: {
           user_id: user_id,
-          username: req.body.username,
-          user_name: req.body.user_name,
-          user_surname: req.body.user_surname,
-          user_password: req.body.user_password,
-          user_email: req.body.user_email,
-          user_type: req.body.user_type,
+          username: username.toLowerCase(),
+          user_name: user_name.toLowerCase(),
+          user_surname: user_surname.toLowerCase(),
+          user_password: encryptedPassword,
+          user_email: user_email.toLowerCase(),
+          user_type: user_type.toLowerCase(),
         },
       }
     )
