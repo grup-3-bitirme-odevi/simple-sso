@@ -6,7 +6,6 @@ import { BsFillPlusCircleFill } from "react-icons/bs";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import { ToastContainer } from "react-toastify";
-import {BiRefresh} from "react-icons/bi";
 import Pagination from "./Pagination";
 
 const cookie = new Cookies();
@@ -15,7 +14,6 @@ const UserList = ({ token, userDetail }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefresh, setIsRefresh] = useState(false);
   const [currentUsers, setCurrentUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   //bir sayfada kaç adet veri gözükeceğini belirlediğimiz state
@@ -24,7 +22,6 @@ const UserList = ({ token, userDetail }) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const handleRefresh = () => setIsRefresh(!isRefresh)
   const handleLogOut = () => {
     cookie.remove("access_token");
     window.location.reload(false);
@@ -57,7 +54,7 @@ const UserList = ({ token, userDetail }) => {
       setCurrentUsers(users.slice(indexOfFirstPost, indexOfLastPost));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, currentPage, isRefresh]);
+  }, [isLoading, currentPage, show, users]);
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   if (isLoading) {
@@ -73,7 +70,6 @@ const UserList = ({ token, userDetail }) => {
             <Button variant="danger btnLogOut" onClick={handleLogOut}>
               Log Out
             </Button>
-            <Button variant="warning btnRefresh" onClick={handleRefresh}> <BiRefresh /> Refresh Table</Button>
             <Button variant="success" onClick={handleShow}>
               <BsFillPlusCircleFill /> Add New User
             </Button>
