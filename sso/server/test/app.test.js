@@ -52,4 +52,143 @@ describe("SSO contoller", async () => {
     });
 });
 
+describe("SSO negative contoller", async () => {
 
+it("When using wrong url ", done => {
+    chai.request(server).post("?redirectURL=")
+        .send({
+            username: "admin",
+            password: "123456",
+            pass_hash: true
+        })
+        .end((error, res) => { 
+            console.log("Redirect URL is reqiured.")       
+            expect(res.status).to.be.equal(409)
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+
+            done()
+        });
+});
+
+it("When password does not match", done => {
+    chai.request(server).post("?redirectURL=http://localhost:3020")
+        .send({
+            username: "admin",
+            password: "123456",
+            pass_hash: false && null
+        })
+        .end((error, res) => { 
+            console.log("Password not match.")       
+            expect(res.status).to.be.equal(409)
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+
+            done()
+        });
+});
+
+it("When using missing username & password", done => {
+    chai.request(server).post("?redirectURL=http://localhost:3020")
+        .send({
+            username: "",
+            password: "",
+            pass_hash: true
+        })
+        .end((error, res) => { 
+            console.log("All inputs are required.")       
+            expect(res.status).to.be.equal(409)
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+
+            done()
+        });
+});
+
+it("Whe username is wrong ", done => {
+    chai.request(server).post("?redirectURL=http://localhost:3020")
+        .send({
+            username: "admin1",
+            password: "123456",
+            pass_hash: true
+        })
+        .end((error, res) => { 
+            console.log("User not found.")       
+            expect(res.status).to.be.equal(409)
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+
+            done()
+        });
+});
+
+it("When the password does not match", done => {
+    chai.request(server).post("?redirectURL=http://localhost:3020")
+        .send({
+            username: "admin",
+            password: "12345",
+            pass_hash: true
+        })
+        .end((error, res) => { 
+            console.log("Password not match.")       
+            expect(res.status).to.be.equal(409)
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+
+            done()
+        });
+});
+
+
+it("When regex does not match", done => {
+    chai.request(server).post("?redirectURL=http://localhost:3020/test")
+        .send({
+            username: "admin",
+            password: "123456",
+            pass_hash: true
+        })
+        .end((error, res) => { 
+            console.log("You are not authorized.")       
+            expect(res.status).to.be.equal(409)
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+
+            done()
+        });
+});
+it("When wrong bearer", done => {
+    chai.request(server).get("/validate")
+    .set("Authorization" + token)
+        .end(function (err, res) {
+            console.log(res.body.message)
+            console.log(res.status)
+            expect(res.status).to.be.equal(409);
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+            done()
+        });
+});
+
+it("When token does not match", done => {
+    chai.request(server).get("/validate")
+    .set("Authorization", "Bearer " + token + "a")
+        .end(function (err, res) {
+            console.log("Token not found.")
+            expect(res.status).to.be.equal(409);
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+            done()
+        });
+});
+
+it("When there is no token", done => {
+    chai.request(server).get("/validate")
+        .end(function (err, res) {
+            console.log("Token input required.")
+            expect(res.status).to.be.equal(409);
+            expect(res.headers['content-type']).to.equal('application/json; charset=utf-8')
+            expect(res.body.stat).to.be.equal('fail')
+            done()
+        });
+});
+});

@@ -19,7 +19,7 @@ describe('users', () => {
     })
 
     // Check table properties
-    describe('models/Communications - Properties Check', () => {
+    describe('models/users - Properties Check', () => {
         const Comm = UserModel(sequelize, dataTypes)
         const instance = new Comm()
             ;['id', 'username', 'user_name', 'user_surname', 'user_password','user_email','user_type'].forEach(
