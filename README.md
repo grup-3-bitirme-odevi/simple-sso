@@ -111,6 +111,10 @@ Bu uygulamada backend `Node.js`, frontend `React.JS`, veritabanı `MySQL` kullan
 ```
 $ git clone https://github.com/grup-3-bitirme-odevi/project.git
 ```
+
+2. `database` klasöründe bulunan `setup.sql` dosyasını import edin. Sonrasında `storedProcedure.txt` dosyasında bulunan stored procedure'leri db nize ekleyin.
+Veritabanı işlemlerini yaptıktan sonra demo kullanıcılarınız oluşacaktır. `Admin kullanıcı: admin-123456`, `User kullanıcı: user-123456`
+
 2. Mevcut 5 uygulamada dependency'leri yükleyin.
 ```
 $ ./sso-authorization/client npm install
