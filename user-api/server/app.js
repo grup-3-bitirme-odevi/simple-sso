@@ -8,7 +8,7 @@ const Log = db.log;
 
 class StreamHook extends Writable {
   write(line) {
-    let logModule = "USER-MANAGER";
+    let logModule = process.env.ENV_MODULE_NAME;
     let logIp = line.split("|")[0];
     let logMethod = line.split("|")[1];
     let logUrl = line.split("|")[2];

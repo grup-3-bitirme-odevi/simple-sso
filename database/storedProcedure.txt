@@ -1,0 +1,48 @@
+CREATE PROCEDURE `createUser`(
+  IN _username VARCHAR(45),
+  IN _user_name VARCHAR(45),
+  IN _user_surname VARCHAR(45),
+  IN _user_password TEXT,
+  IN _user_email VARCHAR(45),
+  IN _user_type VARCHAR(10)
+  )
+BEGIN
+  DECLARE _resId INT;
+  INSERT INTO users(username, user_name, user_surname, user_password, user_email, user_type)
+  VALUES (_username, _user_name, _user_surname, _user_password, _user_email, _user_type);
+  SELECT * FROM users WHERE id = LAST_INSERT_ID();
+END
+
+CREATE PROCEDURE `updateUser`(
+  IN _user_id INT,
+  IN _username VARCHAR(45),
+  IN _user_name VARCHAR(45),
+  IN _user_surname VARCHAR(45),
+  IN _user_password text,
+  IN _user_email VARCHAR(45),
+  IN _user_type VARCHAR(10)
+  )
+BEGIN
+  UPDATE users 
+    SET 
+    username=_username, 
+    user_name=_user_name, 
+    user_surname=_user_surname, 
+    user_password= IF(NULLIF(_user_password, '') IS NULL, user_password, _user_password),
+    user_email=_user_email,
+    user_type=_user_type
+  WHERE id=_user_id;
+  SELECT * FROM users WHERE id = _user_id;
+END
+
+CREATE PROCEDURE `deleteUser`(
+  IN _user_id INT
+  )
+BEGIN
+  DELETE FROM users WHERE id = _user_id;
+END
+
+CREATE PROCEDURE `getListOfUsers`()
+BEGIN
+  SELECT * FROM users;
+END
