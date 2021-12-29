@@ -61,7 +61,7 @@ const UserList = ({ token, userDetail }) => {
       setCurrentPage(currentPage - 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, currentPage, show, users]);
+  }, [isLoading, currentPage, users]);
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   if (isLoading) {
