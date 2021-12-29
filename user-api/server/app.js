@@ -8,7 +8,7 @@ const Log = db.log;
 
 class StreamHook extends Writable {
   write(line) {
-    let logModule = process.env.ENV_MODULE_NAME;
+    let logModule = "USER-MANAGER";
     let logIp = line.split("|")[0];
     let logMethod = line.split("|")[1];
     let logUrl = line.split("|")[2];
@@ -29,7 +29,7 @@ class StreamHook extends Writable {
 }
 
 // Route Path
-const ssoRoute = require("./route/ssoRoute");
+const appRoute = require("./route/appRoute");
 
 // Express Start
 const app = express();
@@ -49,10 +49,10 @@ app.use(
 );
 
 // Routes
-app.use("/", ssoRoute);
+app.use("/", appRoute);
 
 // App Start
-const PORT = process.env.ENV_APP_PORT || 3100;
+const PORT = process.env.ENV_APP_PORT || 3200;
 app.listen(PORT, () => {
   console.log("Server Started");
 });
@@ -73,4 +73,4 @@ const logger = async (module, ip, method, url, status, res_length, res_ms) => {
   }
 };
 
-module.exports = app
+module.exports = app;
