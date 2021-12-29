@@ -1,0 +1,149 @@
+version: '3.8'
+
+x-common-variables: &common-variables
+  MYSQL_DATABASE: users
+  MYSQL_USER: anil
+  MYSQL_PASSWORD: q1W2e3R4+
+
+services:
+  mysql_db:
+    image: mysql
+    restart: always
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - "./setup.sql:/docker-entrypoint-initdb.d/setup.sql"
+    ports:
+      - "9306:3306"
+    environment:
+      <<: *common-variables
+      MYSQL_ROOT_PASSWORD: q1W2e3R4+
+      MYSQL_HOST: localhost
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  nginx:
+    depends_on:
+      - ssoserver
+      - ummserver
+      - ssoclient
+      - consumerclient
+      - ummclient
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "80:80"
+    
+  ssoserver:
+    build:
+      dockerfile: Dockerfile
+      context: "./sso-authorization/server"
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    volumes:
+      - /app/node_modules
+      - ./sso-authorization/server:/app
+    environment:
+      <<: *common-variables
+      MYSQL_HOST_IP: mysql_db
+    ports:
+      - "3100:3100"
+    networks:
+          default:
+            aliases:
+              - ssoserver
+
+  ummserver:
+    build:
+      dockerfile: Dockerfile
+      context: "./user-manager-module/server"
+    depends_on:
+      - ssoserver
+    volumes:
+      - /app/node_modules
+      - ./user-manager-module/server:/app
+    environment:
+      <<: *common-variables
+      MYSQL_HOST_IP: mysql_db
+    ports:
+      - "3200:3200"
+    networks:
+          default:
+            aliases:
+              - ummserver
+
+  ssoclient:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      dockerfile: Dockerfile
+      context: "./sso-authorization/client"
+    volumes:
+      - /app/node_modules
+      - ./sso-authorization/client:/app
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    ports:
+      - "3010:3010"
+    networks:
+          default:
+            aliases:
+              - ssoclient
+
+  consumerclient:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      dockerfile: Dockerfile
+      context: "./sso-consumer"
+    volumes:
+      - /app/node_modules
+      - ./sso-consumer:/app
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    ports:
+      - "3020:3020"
+    networks:
+          default:
+            aliases:
+              - consumerclient
+
+  ummclient:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      dockerfile: Dockerfile
+      context: "./user-manager-module/client"
+    volumes:
+      - /app/node_modules
+      - ./user-manager-module/client:/app
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    ports:
+      - "3030:3030"
+    networks:
+          default:
+            aliases:
+              - ummclient
+
+  adminer:
+      image: adminer:latest
+      restart: unless-stopped
+      ports:
+        - 8000:8080
+      depends_on:
+        mysql_db:
+          condition: service_healthy
+      environment:
+        ADMINER_DEFAULT_SERVER: mysql_db
