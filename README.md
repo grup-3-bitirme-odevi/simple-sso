@@ -109,7 +109,7 @@ Bu uygulamada backend `Node.js`, frontend `React.JS`, veritabanı `MySQL` kullan
 
 1.  Projeyi klonlayın.
 ```
-$ git clone https://github.com/grup-3-bitirme-odevi/project.git
+$ git clone https://github.com/grup-3-bitirme-odevi/simple-sso
 ```
 
 2. `database` klasöründe bulunan `setup.sql` dosyasını import edin. Sonrasında `storedProcedure.txt` dosyasında bulunan stored procedure'leri db nize ekleyin.
