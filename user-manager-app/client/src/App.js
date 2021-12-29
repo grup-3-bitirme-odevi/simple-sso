@@ -1,6 +1,6 @@
 import "./assets/App.css";
-import UserList from "./components/UserList";
-import Header from "./components/Header";
+import UserList from "./Components/UserList";
+import Header from "./Components/Header";
 import { useState, useEffect } from "react";
 
 import axios from "axios";
