@@ -59,6 +59,18 @@ function App() {
       }
   },[])
 
+  if(!redirect){
+    return(
+      <div className='loginContainer  noRedirectLogin'>
+        <h5 className='noRedirectHead'>Hangi sayfaya gitmek istiyorsunuz?</h5>
+        <div className='mt-5'>
+        <Button className='noRedirectBtn' href='http://localhost:3020'>User Detail</Button>
+        <Button className='noRedirectBtn' href='http://localhost:3030'>User Manage Table</Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="loginContainer">
         {redirect &&
