@@ -9,8 +9,10 @@ const AddForm = ({ token, setShow, cookie }) => {
   const [userCreate, setUserCreate] = useState();
 
   useEffect(() => {
+    //if userCreate is not null
     if (!!userCreate) {
       (async function () {
+        //post request for create user
         await axios
           .post(`${process.env.REACT_APP_UMM_SERVER}/users`, userCreate, {
             headers: {

@@ -14,6 +14,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
  
+  //toastify control
   const notify = (args) => {
     const data = args.data;
     console.log(data);
@@ -24,19 +25,21 @@ function App() {
     }
   }
 
+  //login function
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     let redURL = window.location.search;
     redURL = redURL.replace("?redirectURL=", '');
+    //post request for the user login
     await axios.post(`${process.env.REACT_APP_SSO_SERVER}?redirectURL=${redURL}`,{
       username:username,
       password:sha256(password+process.env.REACT_APP_PASS_SALT),
       pass_hash: false
     }).then(response => {
+      //if stat is success
       if(response.data.stat === 'success'){
         notify(response)
-        cookies.set("access_token", response.data.access_token)
+        cookies.set("access_token", response.data.access_token) // sending access token to the browser
         window.location.assign(redURL);
       }
     }).catch(error => {
@@ -48,7 +51,6 @@ function App() {
     let redURL = window.location.search;
       redURL = redURL.replace("?redirectURL=", '');
       const redirectQuery = window.location.search.split("=")[0];
-  
       if(redirectQuery==="?redirectURL"){
         if(!!redURL){
           setRedirect(true);
@@ -70,22 +72,20 @@ function App() {
       </div>
     )
   }
-
   return (
     <div className="loginContainer">
         {redirect &&
       <div className="formContainer">
-        <Form className="formElementContainer" onSubmit={handleSubmit} >
+        <Form className="formElementContainer" onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicName">
             <Form.Label>Kullanıcı Adı</Form.Label>
             <Form.Control type="text" value={username} onChange={(e) => {setUsername(e.target.value)}} placeholder="Kullanıcı Adınızı giriniz"  />
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Şifre</Form.Label>
             <Form.Control type="password" value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Şifrenizi Giriniz"  />
           </Form.Group>
-          <Button type="submit" className='loginBtn' >
+          <Button type="submit" className='loginBtn'>
             Giriş Yap
           </Button>
           <ToastContainer />

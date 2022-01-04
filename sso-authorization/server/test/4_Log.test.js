@@ -7,10 +7,10 @@ const {
 
 const LogModel = require('../model/Log')
 
-describe('users', () => {
+describe('Log Check', () => {
 
     // Check our db model table name
-    describe('models/user - Table Name Check', () => {
+    describe('models/Log - Table Name Check', () => {
         const Comm = LogModel(sequelize, dataTypes)
         checkModelName(Comm)('log')
     })

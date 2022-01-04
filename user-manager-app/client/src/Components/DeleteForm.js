@@ -17,6 +17,7 @@ const DeleteForm = ({
   };
 
   const deleteUser = async () => {
+    //delete request for the delete user
     await axios
       .delete(`${process.env.REACT_APP_UMM_SERVER}/users/${user.id}`, {
         headers: {

@@ -7,16 +7,16 @@ const {
   
   const LogModel = require('../model/Log')
   
-  describe('users', () => {
+  describe('Log Check', () => {
   
       // Check our db model table name
-      describe('models/user - Table Name Check', () => {
+      describe('models/Log - Table Name Check', () => {
           const Comm = LogModel(sequelize, dataTypes)
           checkModelName(Comm)('log')
       })
   
       // Check table properties
-      describe('models/Communications - Properties Check', () => {
+      describe('models/Log - Properties Check', () => {
           const Comm = LogModel(sequelize, dataTypes)
           const instance = new Comm()
               ;['id', 'module', 'ip', 'method', 'url','status','res_length','res_ms'].forEach(

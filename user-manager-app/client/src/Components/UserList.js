@@ -16,34 +16,36 @@ const UserList = ({ token, userDetail }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentUsers, setCurrentUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  //bir sayfada kaç adet veri gözükeceğini belirlediğimiz state
+  //state where we determine how many data will appear on a page 
   const [userPerPage] = useState(5);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const handleLogOut = () => {
-    cookie.remove("access_token");
-    window.location.reload(false);
+  const handleLogOut = () => { //for user logout
+    cookie.remove("access_token"); //remove token from browser
+    window.location.reload(false); //refresh page
   };
-
+  //We run this function without loading the page with useLayoutEffect
   useLayoutEffect(() => {
     (async function () {
+      //take user list
       await axios
         .get(`${process.env.REACT_APP_UMM_SERVER}/users/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        })
+        })//if process is successful
         .then((response) => {
-          setUsers(response.data.data);
-          setIsLoading(false);
-        })
+          setUsers(response.data.data); 
+          setIsLoading(false); 
+        }) //process is unsuccessful
         .catch((error) => {
+          //if status is 401
           if (error.response.status === 401) {
-            cookie.remove("access_token");
-            window.location.reload(false);
+            cookie.remove("access_token");//remove token from browser
+            window.location.reload(false);//refresh page
           }
           console.log(error);
         });
@@ -54,9 +56,12 @@ const UserList = ({ token, userDetail }) => {
   const indexOfLastPost = currentPage * userPerPage;
   const indexOfFirstPost = indexOfLastPost - userPerPage;
   useEffect(() => {
+    //if loading process finished
     if (!isLoading) {
+      //filter data and set currentUsers
       setCurrentUsers(users.slice(indexOfFirstPost, indexOfLastPost));
     }
+    //if currentUsers length is equal the 0
     if (currentUsers.length - 1 === 0) {
       setCurrentPage(currentPage - 1);
     }
@@ -64,6 +69,8 @@ const UserList = ({ token, userDetail }) => {
   }, [isLoading, currentPage, users]);
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  //if datas is loading
   if (isLoading) {
     return <div>Loading...</div>;
   }

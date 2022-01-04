@@ -1,7 +1,7 @@
 import React from "react";
 import { Navbar, Container, Nav, Col } from "react-bootstrap";
 
-const Header = ({ userDetail }) => {
+const Header = ({ userDetail }) => { // prop the userDetail for the get username
   return (
     <>
       <Col className="pageHeader" xl={12} md={12} lg={12} sm={12} xs={12}>

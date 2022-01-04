@@ -7,15 +7,16 @@ import { Cookies } from "react-cookie";
 const cookie = new Cookies();
 
 const Card = ({ token }) => {
-  const [userDetail, setUserDetail] = useState({});
+  const [userDetail, setUserDetail] = useState({}); 
 
-  const handleLogOut = () => {
-    cookie.remove("access_token");
-    window.location.reload(false);
+  const handleLogOut = () => { //for the user logout
+    cookie.remove("access_token");//remove cookie from browser
+    window.location.reload(false);//refresh page
   };
 
   useEffect(() => {
     (async function () {
+      //get request for the user info
       await axios
         .get(`${process.env.REACT_APP_UMM_SERVER}/users/info`, {
           headers: {

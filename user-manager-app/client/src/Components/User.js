@@ -26,8 +26,8 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail, cookie }) => {
   return (
     <>
       <td>
-        {user.username === userDetail.username ? (
-          <ControlTxt user={user} />
+        {user.username === userDetail.username ? ( //userin current user olup olmadığını sorguladığımız yer
+          <ControlTxt user={user} /> //current userin componenti
         ) : (
           user.username
         )}
@@ -40,6 +40,7 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail, cookie }) => {
         <BsPencilSquare onClick={editHandleShow} className="updateIcon" />
         <BsFillTrashFill onClick={deleteHandleShow} className="deleteIcon" />
       </td>
+
       <Modal show={editShow} onHide={editHandleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit User</Modal.Title>
@@ -61,6 +62,7 @@ const User = ({ token, user, setIsEdit, setIsDelete, userDetail, cookie }) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <DeleteForm
         deleteShow={deleteShow}
         setIsDelete={setIsDelete}

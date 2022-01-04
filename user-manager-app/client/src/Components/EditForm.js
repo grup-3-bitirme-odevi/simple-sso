@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 const EditForm = ({ token, user, setIsEdit, setEditShow, cookie }) => {
   const [userUpdate, setUserUpdate] = useState("");
   useEffect(() => {
+    //if userUpdate is not null
     if (!!userUpdate) {
       (async function () {
+        //put request update user
         await axios
           .put(`${process.env.REACT_APP_UMM_SERVER}/users/${user.id}`, userUpdate, {
             headers: {
