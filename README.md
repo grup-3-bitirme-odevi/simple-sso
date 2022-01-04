@@ -8,11 +8,46 @@
 
 [Oğuz Özşen](https://github.com/OuzOzsn) / [Mustafa Anılcan Yurtbay](https://github.com/yrtby) / [Koray Sarıoğlu](https://github.com/koraysarioglu) / [Ömer Faruk Şahin](https://github.com/omerfaruk-sahin)
 
+<br>
+
+# Example
+
+![Alt text](./images/login.gif) 
+
 
 <br>
 
 ## Tech Stack
 Bu uygulamada backend `Node.js`, frontend `React.JS`, veritabanı `MySQL` kullanılmıştır
+
+* Frontend
+    * Teknolojiler
+        * React.JS
+    * Paketler
+        * React-bootstrap – Hazır şablonlar ve responsive uyumluluk.
+        * React-cookie – Tarayıcı çerez yönetimi.
+        * React-icons – Hazır simgeler.
+        * React-toastify – Kullanıcı bildirimi.
+        * Formik – Form yönetimi ve doğrulaması.
+        * Yup – Form yönetimi ve doğrulaması.
+        * Js-sha256 – Giriş bilgilerini backend’e göndermeden önce şifreleme.
+        * Axios – HTTP İstemcisi.
+
+* Backend
+    * Teknolojiler
+        * Node.JS
+        * MySQL
+    * Paketler
+        * Mysql2 – Veritabanı sürücüsü.
+        * Sequelize – İlişkisel veritabanı için ORM.
+        * Express – Web framework.
+        * Cors – Express cors middleware.
+        * Bcrypt – Giriş bilgilerini backend’de şifreleme.
+        * Axios – HTTP İstemcisi.
+        * Morgan – Loglama.
+        * Mocha – Unit test çalıştırma.
+        * Chai – Unit test oluşturma.
+        * Sequelize-test-helpers – Modeller için unit test’e yardımcı paket.
 
 <br>
 
@@ -112,7 +147,7 @@ Bu uygulamada backend `Node.js`, frontend `React.JS`, veritabanı `MySQL` kullan
 $ git clone https://github.com/grup-3-bitirme-odevi/simple-sso
 ```
 
-2. `database` klasöründe bulunan `setup.sql` dosyasını import edin. Sonrasında `storedProcedure.txt` dosyasında bulunan stored procedure'leri db nize ekleyin.
+2. [Database](https://github.com/grup-3-bitirme-odevi/simple-sso/tree/main/database) klasöründe bulunan `setup.sql` dosyasını import edin. Sonrasında `storedProcedure.txt` dosyasında bulunan stored procedure'leri db nize ekleyin.
 Veritabanı işlemlerini yaptıktan sonra demo kullanıcılarınız oluşacaktır. `Admin kullanıcı: admin-123456`, `User kullanıcı: user-123456`
 
 2. Mevcut 5 uygulamada dependency'leri yükleyin.

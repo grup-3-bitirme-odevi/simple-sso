@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const Writable = require("stream").Writable;
 const Log = db.log;
 
+// Logger hook
 class StreamHook extends Writable {
   write(line) {
     let logModule = process.env.ENV_MODULE_NAME;
@@ -57,6 +58,7 @@ app.listen(PORT, () => {
   console.log("Server Started");
 });
 
+// Logger write DB
 const logger = async (module, ip, method, url, status, res_length, res_ms) => {
   try {
     await Log.create({

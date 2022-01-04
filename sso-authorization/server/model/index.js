@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { Sequelize, DataTypes } = require("sequelize");
+// Set database credentials
 const sequelize = new Sequelize(
   process.env.ENV_DB_NAME,
   process.env.ENV_DB_USER,
@@ -11,6 +12,7 @@ const sequelize = new Sequelize(
   }
 );
 
+// Connect Database
 sequelize
   .authenticate()
   .then(() => {
@@ -25,11 +27,13 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+// Model route
 db.user = require("./User")(sequelize, DataTypes);
 db.url = require("./Url")(sequelize, DataTypes);
 db.token = require("./Token")(sequelize, DataTypes);
 db.log = require("./Log")(sequelize, DataTypes);
 
+// DB Sync and create Stored Procedure
 db.sequelize
   .sync({
     force: false,

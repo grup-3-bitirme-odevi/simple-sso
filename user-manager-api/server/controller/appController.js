@@ -4,7 +4,10 @@ const bcrypt = require("bcrypt");
 
 const User = db.user;
 
+// Request: (username, user_name, user_surname, user_password, user_email, user_type, pass_hash)
+// Response: If success, (success, user credentials) / else (fail)
 exports.createUser = async (req, res) => {
+  // User params catching from req
   const {
     username,
     user_name,
@@ -14,8 +17,11 @@ exports.createUser = async (req, res) => {
     user_type,
     pass_hash,
   } = req.body;
+
+  // Assign incoming password to parameter, to use later
   let getPassword = user_password;
 
+  // Check pass_hash parameter
   if (pass_hash == null && pass_hash == undefined) {
     return res.status(409).json({
       stat: "fail",
@@ -23,6 +29,7 @@ exports.createUser = async (req, res) => {
     });
   }
 
+  // Check User Create params
   if (
     !(
       username &&
@@ -39,9 +46,12 @@ exports.createUser = async (req, res) => {
     });
   }
 
+  // If there is user params, check username
   const checkUsername = await User.findOne({ where: { username: username } });
+  // If there is user params, check user email
   const checkEmail = await User.findOne({ where: { user_email: user_email } });
 
+  // Check username if exists
   if (checkUsername) {
     return res.status(409).json({
       stat: "fail",
@@ -49,6 +59,7 @@ exports.createUser = async (req, res) => {
     });
   }
 
+  // Check user email if exists
   if (checkEmail) {
     return res.status(409).json({
       stat: "fail",
@@ -56,12 +67,15 @@ exports.createUser = async (req, res) => {
     });
   }
 
+  // Check pass_hash params (true or false)
   if (pass_hash) {
     getPassword = sha256(getPassword + process.env.ENV_PASS_SALT);
   }
 
+  // Encrypt user password
   const encryptedPassword = await bcrypt.hash(getPassword, 10);
 
+  // Call createUser Stored Procedure
   await db.sequelize
     .query(
       "CALL createUser (:username, :user_name, :user_surname, :user_password, :user_email, :user_type)",
@@ -77,24 +91,29 @@ exports.createUser = async (req, res) => {
       }
     )
     .then((data) => {
+      // If user created, return success
       return res.status(201).json({
         stat: "success",
         message: data,
       });
     })
     .catch((err) => {
+      // Else, return fail
       return res.status(409).json({
         stat: "fail",
       });
     });
 };
 
+// Request: (user_id)
+// Response: If success, (success) / else (fail)
 exports.deleteUser = async (req, res) => {
   const { user_id } = req.params;
-  console.log(user_id);
 
+  // If there is user_id, check user
   const user = await User.findOne({ where: { id: user_id } });
 
+  // If user not found
   if (!user) {
     return res.status(409).json({
       stat: "fail",
@@ -102,6 +121,7 @@ exports.deleteUser = async (req, res) => {
     });
   }
 
+  // If user try to delete himself.
   if (user_id == req._user.id) {
     return res.status(409).json({
       stat: "fail",
@@ -109,6 +129,7 @@ exports.deleteUser = async (req, res) => {
     });
   }
 
+  // Call deleteUser Stored Procedure
   await db.sequelize
     .query("CALL deleteUser (:user_id)", {
       replacements: {
@@ -116,18 +137,22 @@ exports.deleteUser = async (req, res) => {
       },
     })
     .then(() => {
-      res.status(200).json({
+      // If user deleted, return success
+      return res.status(200).json({
         stat: "success",
         message: "User deleted.",
       });
     })
     .catch((err) => {
-      res.status(409).json({
+      // Else, return fail
+      return res.status(409).json({
         stat: "fail",
       });
     });
 };
 
+// Request: (user_id, username, user_name, user_surname, user_password, user_email, user_type, pass_hash)
+// Response: If success, (success, user credentials) / else (fail)
 exports.updateUser = async (req, res) => {
   const {
     username,
@@ -141,8 +166,10 @@ exports.updateUser = async (req, res) => {
   const { user_id } = req.params;
   let getPassword = user_password;
 
+  // Check user_id 
   const user = await User.findOne({ where: { id: user_id } });
 
+  // If user not found
   if (!user) {
     return res.status(409).json({
       stat: "fail",
@@ -150,6 +177,7 @@ exports.updateUser = async (req, res) => {
     });
   }
 
+  // Check pass_hash parameter
   if (pass_hash == null && pass_hash == undefined) {
     return res.status(409).json({
       stat: "fail",
@@ -157,6 +185,7 @@ exports.updateUser = async (req, res) => {
     });
   }
 
+  // Check User Update params
   if (!(username && user_name && user_surname && user_email && user_type)) {
     return res.status(409).json({
       stat: "fail",
@@ -164,12 +193,15 @@ exports.updateUser = async (req, res) => {
     });
   }
 
+  // Check pass_hash params (true or false)
   if (pass_hash) {
     getPassword = sha256(getPassword + process.env.ENV_PASS_SALT);
   }
 
+  // Encrypt user password
   const encryptedPassword = await bcrypt.hash(getPassword, 10);
 
+  // Call updateUser Stored Procedure
   await db.sequelize
     .query(
       "CALL updateUser (:user_id, :username, :user_name, :user_surname, :user_password, :user_email, :user_type)",
@@ -186,7 +218,8 @@ exports.updateUser = async (req, res) => {
       }
     )
     .then(() => {
-      res.status(201).json({
+      // If user created, return success
+      return res.status(201).json({
         stat: "success",
         message: {
           username: username,
@@ -198,33 +231,46 @@ exports.updateUser = async (req, res) => {
       });
     })
     .catch(() => {
-      res.status(409).json({
+      // Else, return fail
+      return res.status(409).json({
         stat: "fail",
       });
     });
 };
 
+// Request ()
+// Response: If success, (success, user credentials) / else (fail)
 exports.getListOfUsers = async (req, res) => {
+
+  // Call getListOfUsers Stored Procedure
   await db.sequelize
     .query("CALL getListOfUsers () ")
     .then((data) => {
-      res.status(200).json({
+      // Return success and user list
+      return res.status(200).json({
         stat: "success",
         data: data,
       });
     })
     .catch(() => {
-      res.status(409).json({
+      // Else, return fail
+      return res.status(409).json({
         stat: "fail",
       });
     });
 };
 
+// Request (Middleware - user_id)
+// Response: If success, (success, user credentials) / else (fail)
 exports.getUserInfo = async (req, res) => {
   try {
+    // User params catching from req
     const { id } = req._user;
+
+    // If there is user params, check user_id
     const user = await User.findOne({ where: { id: id } });
 
+    // If user not found
     if (!user) {
       return res.status(409).json({
         stat: "fail",
@@ -232,6 +278,7 @@ exports.getUserInfo = async (req, res) => {
       });
     }
 
+    // If user found
     return res.status(200).json({
       stat: "success",
       data: {
@@ -244,6 +291,7 @@ exports.getUserInfo = async (req, res) => {
       },
     });
   } catch (err) {
+    // Catch error
     return res.status(500).json({
       stat: "fail",
       message: err,

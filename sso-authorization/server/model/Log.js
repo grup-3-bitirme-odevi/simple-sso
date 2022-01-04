@@ -44,6 +44,3 @@ module.exports = (sequelize, DataTypes) => {
 
   return Log;
 };
-
-// Logger::  ::1 - - [27/Dec/2021:09:52:56 +0000] "GET /validate HTTP/1.1" 200 18 "-" "PostmanRuntime/7.28.4"
-// Module: sso-auth :  Date :
